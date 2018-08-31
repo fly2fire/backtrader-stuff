@@ -32,7 +32,7 @@ class BaseStrategy(bt.Strategy):
         if global_config.GLOBAL_CONFIG == 'STOCK':
             leverage = self.broker.comminfo[None].params.leverage
             #return 100
-            stocks = int(self.broker.getvalue() / len(self.datas) / data.close[0] * .9 * leverage)
+            stocks = int(self.broker.getcash() / len(self.datas) / data.close[0] * .9 * leverage)
             if stocks == 0:
                 stocks = 1
             return stocks

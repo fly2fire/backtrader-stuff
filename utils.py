@@ -180,11 +180,13 @@ ALL_DATAS = [
 
 STOCKS = [
 BASE_PATH + 'kibot_data/stocks/15min/AAPL.txt',
-#BASE_PATH + 'kibot_data/stocks/15min/GE.txt',
+BASE_PATH + 'kibot_data/stocks/15min/GE.txt',
 #BASE_PATH + 'kibot_data/stocks/15min/DELL.txt',
 #BASE_PATH + 'kibot_data/stocks/15min/AMZN.txt',
-#BASE_PATH + 'kibot_data/stocks/15min/QCOM.txt',
-#BASE_PATH + 'kibot_data/stocks/15min/MSFT.txt',
+BASE_PATH + 'kibot_data/stocks/15min/QCOM.txt',
+BASE_PATH + 'kibot_data/stocks/15min/MSFT.txt',
+BASE_PATH + 'kibot_data/stocks/15min/FB.txt',
+BASE_PATH + 'kibot_data/stocks/15min/WMT.txt',
 #BASE_PATH + 'pitrading_data/QCOM.txt',
 ]
 
@@ -223,13 +225,13 @@ def add_data(cerebro):
         #    print(row)
         #print(df)
 
-        data = btfeed.PandasData(name = os.path.splitext(os.path.basename(txt))[0],
-                                 timeframe=bt.TimeFrame.Ticks,
-                                 fromdate=datetime.datetime(1900, 1, 1),
-                                 todate=datetime.datetime(2019, 12, 1),
-                                 dataname=df,datetime=0,open=1,high=2,low=3,close=4,volume=5,openinterest=-1)
+        #data = btfeed.PandasData(name = os.path.splitext(os.path.basename(txt))[0],
+        #                         timeframe=bt.TimeFrame.Ticks,
+        #                         fromdate=datetime.datetime(1900, 1, 1),
+        #                         todate=datetime.datetime(2019, 12, 1),
+        #                         dataname=df,datetime=0,open=1,high=2,low=3,close=4,volume=5,openinterest=-1)
 
-        '''
+
         data = btfeed.GenericCSVData(dataname=txt,
                                      dtformat='%m/%d/%Y',
                                      tmformat='%H:%M',
@@ -250,6 +252,6 @@ def add_data(cerebro):
                                      runonce=True
                                      )
         
-        '''
+
         #data = MyChartData(dataname=txt,name=os.path.splitext(os.path.basename(txt))[0])
         cerebro.adddata(data)

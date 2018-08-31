@@ -46,7 +46,7 @@ class hilo(bt.ind.PeriodN):
         self.lines.mini = bt.ind.Lowest(self.data.low, period=self.p.period)
 
 class DonchianChannel(bt.Indicator):
-    lines = ('buysig','sellsig')
+    lines = ('buysig','sellsig','exitlong','exitshort')
     params = (('period',20),)
 
     def __init__(self):
@@ -55,6 +55,9 @@ class DonchianChannel(bt.Indicator):
     def next(self):
         self.lines.buysig[0] = self.data.close[0] >  self.channel.maxi[-1]
         self.lines.sellsig[0] = self.data.close[0] <  self.channel.mini[-1]
+        average = int((self.channel.maxi[0] + self.channel.mini[0]) / 2)
+        self.lines.exitlong[0] = self.data.close[0] < average
+        self.lines.exitshort[0] = self.data.close[0] > average
 
 class EWMAC(bt.Indicator):
     lines = ('ewmac',)
