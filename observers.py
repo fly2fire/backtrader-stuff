@@ -13,7 +13,7 @@ class AcctCash(bt.Observer):
     plotinfo = {"plot": True, "subplot": True}
 
     def next(self):
-        self.lines.value[0] = self._owner.broker.getcash() # Get today's account value (cash + stocks)
+        self.lines.value[0] = self._owner.broker.getcash() / self._owner.broker.getvalue() # Get today's account value (cash + stocks)
 
 
 class AcctValue(bt.Observer):

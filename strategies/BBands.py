@@ -13,7 +13,7 @@ class BBands(strategies.BaseStrategy.BaseStrategy):
     def __init__(self):
         super().__init__()
         for d in self.datas:
-            self.add_indicator(d,'bb',bt.ind.BollingerBands,period=10)
+            self.add_indicator(d,'bb',bt.ind.BollingerBands,period=20)
 
     def next(self):
         #if not (datetime.time(10,00) <= self.data.datetime.time() <= datetime.time(16, 00)):

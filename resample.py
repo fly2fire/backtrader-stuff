@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import tempfile
 import datetime
+import os
 
 COLUMNS = ["Date","Time","Open","High","Low","Close","Volume"]
 
@@ -12,7 +13,7 @@ def chunks(l, n):
 
 def resample_dataframe(df, period):
     ret = []
-    prev_date = datetime.datetime(0,0,0,0,0,0,0)
+    #prev_date = datetime.datetime(0,0,0,0,0,0,0)
     for chunk in chunks(df,period):
         ret.append([chunk.iloc[0]["Date"],
                chunk.iloc[0]["Time"],
@@ -25,7 +26,6 @@ def resample_dataframe(df, period):
     ret = pd.DataFrame(ret,columns=COLUMNS)
     return ret
 
-<<<<<<< HEAD
 def resample_dataframe2(df,period):
     ret = []
     cur_line = ["01/01/0000","00:00",0.0,0.0,0.0,0.0,0]
@@ -41,8 +41,10 @@ def resample_dataframe2(df,period):
 
         print(d,t,o,h,l,c,v)
 
-df = pd.read_csv("/media/forrest/769A17459A170173/Users/mcdof/Documents/pitrading_data/QCOM.txt",dtype={"Date":np.str,"Time":np.str},engine='c')
-resampled = resample_dataframe2(df,5)
-#resampled.to_csv("RACE5min.csv", index=False,)
-=======
->>>>>>> 5039bbd0b999392db6757847e367858e85176502
+base_path = "/media/forrest/769A17459A170173/Users/mcdof/Documents/kibot_data/forex/"
+for csv in os.listdir(os.path.join(base_path,'120min')):
+    print("processing",csv)
+    csv_path = os.path.join(base_path,'120min',csv)
+    df = pd.read_csv(csv_path,dtype={"Date":np.str,"Time":np.str},engine='c')
+    resampled = resample_dataframe(df,2)
+    resampled.to_csv(os.path.join(base_path,'240min',csv), index=False,)

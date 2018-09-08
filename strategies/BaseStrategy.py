@@ -29,20 +29,37 @@ class BaseStrategy(bt.Strategy):
         return self.indicators[data.params.name][name]
 
     def do_sizing_simple(self,security_name, data):
-        if global_config.GLOBAL_CONFIG == 'STOCK':
+        if global_config.GLOBAL_CONFIG in ['STOCK']:
             leverage = self.broker.comminfo[None].params.leverage
             #return 100
-            stocks = int(self.broker.getcash() / len(self.datas) / data.close[0] * .9 * leverage)
+
+            stocks = int(self.broker.getvalue() / len(self.datas) / data.close[0] * .9 * leverage * 5)
             if stocks == 0:
                 stocks = 1
             return stocks
-        comminfo = self.broker.comminfo[security_name]
-        margin = comminfo.margin
-        mult = comminfo.params.mult
-        max_contracts = int((self.broker.getvalue() / margin / len(self.datas))**(1.0 / 3.0))
-        if max_contracts == 0:
-            max_contracts = 1
-        return max_contracts
+        elif global_config.GLOBAL_CONFIG in ['FOREX']:
+            comminfo = self.broker.comminfo
+            if security_name in self.broker.comminfo:
+                leverage = self.broker.comminfo[security_name].params.leverage
+            else:
+                leverage = self.broker.comminfo[None].params.leverage
+            #return 1
+            stocks = int(self.broker.getvalue() / len(self.datas) / data.close[0] * .1 * leverage * 1)
+            if stocks == 0:
+                stocks = 1
+            return stocks
+
+        elif global_config.GLOBAL_CONFIG in ['FUTURES']:
+            comminfo = self.broker.comminfo[security_name]
+            margin = comminfo.margin
+            mult = comminfo.params.mult
+            try:
+                max_contracts = int((self.broker.getvalue() / margin / len(self.datas))**(1.0 / 2.0))
+            except:
+                max_contracts = 1
+            if max_contracts == 0:
+                max_contracts = 1
+            return max_contracts
 
     def close_open_orders(self, data):
         orders = self.orders[data.params.name]
@@ -51,6 +68,9 @@ class BaseStrategy(bt.Strategy):
         for o in orders:
             self.cancel(o)
             self.log('Order cancelled')
+
+    def record_parent_stop(self,parent,stop):
+        self.brackets[parent.ref] = [stop]
 
     def record_bracket(self,bracket):
         # for brackets

@@ -7,6 +7,21 @@ import utils
 import commissions
 import math
 
+
+
+class ConnorsRSI(bt.Indicator):
+    lines = ('returns',)
+    params = (('period',20),)
+
+    def __init__(self):
+        self.addminperiod(self.params.period + 2)
+
+    def next(self):
+        o = self.data.open[-self.params.period]
+        c = self.data.close[0]
+        returns = (c - o) / o
+        self.lines.returns[0] = returns
+
 class PercentReturnsPeriod(bt.Indicator):
     lines = ('returns',)
     params = (('period',20),)
