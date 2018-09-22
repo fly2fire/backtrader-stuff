@@ -36,13 +36,13 @@ def main():
         for com in ALL_COMMISSIONS:
             cerebro.broker.setcommission(**com)
     elif global_config.GLOBAL_CONFIG == 'STOCK':
-        cerebro.broker.setcommission(leverage=1,stocklike=True,commission=.00005,mult=1,margin=None)
+        cerebro.broker.setcommission(leverage=1,stocklike=True,commission=.0001,mult=1,margin=None,interest=.00,interest_long=True)
 
     cerebro.broker.set_cash(2500000)
     cerebro.addobserver(observers.AcctValue)
     cerebro.addobserver(observers.AcctCash)
     utils.add_data(cerebro)
-    cerebro.addstrategy(strategies.RSI.RSI)
+    cerebro.addstrategy(strategies.SimpleMA.SimpleMA)
     cerebro.addobserver(bt.observers.DrawDown)
     cerebro.addanalyzer(bt.analyzers.SharpeRatio)
     cerebro.addanalyzer(bt.analyzers.SQN)

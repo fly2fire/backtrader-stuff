@@ -29,41 +29,41 @@ FOREX_FUTURES = [
 
 DAILIES_FUTURES = [
     BASE_PATH + 'kibot_data/cont_futures/daily/GC.txt',
-    BASE_PATH + 'kibot_data/cont_futures/daily/PA.txt',
-     BASE_PATH + 'kibot_data/cont_futures/daily/PL.txt',
-     BASE_PATH + 'kibot_data/cont_futures/daily/SI.txt',
-     BASE_PATH + 'kibot_data/cont_futures/daily/HG.txt',
-    # #BASE_PATH + 'kibot_data/cont_futures/daily/NN.txt',
-     BASE_PATH + 'kibot_data/cont_futures/daily/NQ.txt',
-     BASE_PATH + 'kibot_data/cont_futures/daily/NG.txt',
-     BASE_PATH + 'kibot_data/cont_futures/daily/CL.txt',
-     BASE_PATH + 'kibot_data/cont_futures/daily/HO.txt',
-     BASE_PATH + 'kibot_data/cont_futures/daily/RB.txt',
-     BASE_PATH + 'kibot_data/cont_futures/daily/TY.txt',
-     BASE_PATH + 'kibot_data/cont_futures/daily/JY.txt',
-     BASE_PATH + 'kibot_data/cont_futures/daily/BP.txt',
-     BASE_PATH + 'kibot_data/cont_futures/daily/CD.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/NE.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/AD.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/SF.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/DX.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/PX.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/GF.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/LE.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/HE.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/S.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/C.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/BO.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/SM.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/W.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/SB.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/KC.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/KW.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/CC.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/OJ.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/RR.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/O.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/LB.txt',
+    # BASE_PATH + 'kibot_data/cont_futures/daily/PA.txt',
+    #  BASE_PATH + 'kibot_data/cont_futures/daily/PL.txt',
+      BASE_PATH + 'kibot_data/cont_futures/daily/SI.txt',
+    #  BASE_PATH + 'kibot_data/cont_futures/daily/HG.txt',
+    # # #BASE_PATH + 'kibot_data/cont_futures/daily/NN.txt',
+    #  BASE_PATH + 'kibot_data/cont_futures/daily/NQ.txt',
+    #  BASE_PATH + 'kibot_data/cont_futures/daily/NG.txt',
+  BASE_PATH + 'kibot_data/cont_futures/daily/CL.txt',
+    #  BASE_PATH + 'kibot_data/cont_futures/daily/HO.txt',
+    #  BASE_PATH + 'kibot_data/cont_futures/daily/RB.txt',
+    #  BASE_PATH + 'kibot_data/cont_futures/daily/TY.txt',
+    #  BASE_PATH + 'kibot_data/cont_futures/daily/JY.txt',
+    #  BASE_PATH + 'kibot_data/cont_futures/daily/BP.txt',
+    #  BASE_PATH + 'kibot_data/cont_futures/daily/CD.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/NE.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/AD.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/SF.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/DX.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/PX.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/GF.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/LE.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/HE.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/S.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/C.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/BO.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/SM.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/W.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/SB.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/KC.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/KW.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/CC.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/OJ.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/RR.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/O.txt',
+    #   BASE_PATH + 'kibot_data/cont_futures/daily/LB.txt',
 
 ]
 
@@ -133,7 +133,7 @@ ALL_DATAS = [
 
 STOCKS = [
 
-BASE_PATH + 'kibot_data/stocks/15min/GENZ.txt',
+BASE_PATH + 'kibot_data/stocks/daily/SPY.txt',
 
 ]
 
@@ -194,10 +194,10 @@ class MyPandasData(bt.feeds.PandasData):
 
 def add_data(cerebro):
     files = get_files_by_file_size(STOCKS_BASE_PATH,reverse=True)
-    files = files[:int(len(files)/4)]
+    files = files[:int(len(files)/2)]
     print(files[0])
     random.shuffle(files)
-    for txt in  files[:200]:
+    for txt in  files[:100]:
         print("adding",txt)
         if 'daily' in txt:
             data = btfeed.GenericCSVData(dataname=txt,
@@ -205,7 +205,7 @@ def add_data(cerebro):
                                      #tmformat='%H:%M',
                                      name = os.path.splitext(os.path.basename(txt))[0],
                                      timeframe=bt.TimeFrame.Days,
-                                     fromdate=datetime.datetime(2000, 1, 1),
+                                     fromdate=datetime.datetime(1900, 1, 1),
                                      todate=datetime.datetime(2018, 12, 1),
                                      datetime=0,
                                      time=-1,
@@ -236,7 +236,7 @@ def add_data(cerebro):
                                      close=5,
                                      volume=6,
                                      openinterest=-6,
-                                     plot=False,
+                                    # plot=False,
                                      preload=True,
                                      runonce=True
                                      )

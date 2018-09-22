@@ -26,8 +26,9 @@ class MACross(strategies.BaseStrategy.BaseStrategy):
     def next(self):
         #if not (datetime.time(10,00) <= self.data.datetime.time() <= datetime.time(16, 00)):
         #    return
-        for i,d in enumerate(self.datas):
+        for i,d in enumerate(self.get_trading_securities()):
             security_name = d.params.name
+            print(security_name)
 
             #if self.orders[security_name]:
             #    continue
@@ -37,19 +38,7 @@ class MACross(strategies.BaseStrategy.BaseStrategy):
             #print(atr)
             ema_real_slow = self.get_indicator(d,'ema_slow')
             if self.get_indicator(d, 'cross')[0] == 1:
-                if self.getposition(d).size > 0:
-                    continue
-                elif self.getposition(d).size < 0:
-                    self.close(data=d)
-                #self.orders[security_name] = self.buy_bracket(data=d, size=contracts, exectype=bt.Order.Market,stopprice=d.close[0]*.98, limitprice=d.close[0]*1.02)
-                if ema_real_slow[0] > ema_real_slow[-1]:
-                    self.buy(data=d,size=contracts)
+                self.order_target_percent(d,.99)
 
             elif self.get_indicator(d, 'cross')[0] == -1:
-                if self.getposition(d).size < 0:
-                    continue
-                elif self.getposition(d).size > 0:
-                    self.close(data=d)
-                #self.orders[security_name] = self.sell_bracket(data=d,size=contracts, exectype=bt.Order.Market,stopprice=d.close[0]*1.02,limitprice=d.close[0]*.98)
-                #if ema_real_slow[0] < ema_real_slow[-1]:
-                #    self.sell(data=d,size=contracts)
+                self.order_target_percent(d, 0)

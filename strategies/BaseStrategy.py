@@ -13,13 +13,22 @@ class BaseStrategy(bt.Strategy):
             self.orders[d.params.name] = None
             self.indicators[d.params.name] = dict()
 
+    def get_trading_securities(self):
+        for d in self.datas:
+            if d.datetime.date() == self.datetime.date():
+                yield d
+
+
+    def prenext(self):
+        self.next()
+
     def stop(self):
         for d in self.datas:
             self.close(data=d)
 
     def log(self, txt, dt=None):
-        dt = dt or self.data.datetime.date()
-        t  = self.data.datetime.time()
+        dt = dt or self.datetime.date()
+        t  = self.datetime.time()
         print('%s %s, %s' % (dt.isoformat(), t, txt))
 
     def add_indicator(self,data,name,ind,*args,**kwargs):
@@ -33,8 +42,9 @@ class BaseStrategy(bt.Strategy):
             leverage = self.broker.comminfo[None].params.leverage
             #return 100
 
-            stocks = int(self.broker.getvalue() / len(self.datas) / data.close[0] * .9 * leverage * 5)
+            stocks = int(self.broker.getcash() / len([self.get_trading_securities()]) / data.close[0] * .6 * leverage * 1)
             if stocks == 0:
+                print("num stocks is zero!")
                 stocks = 1
             return stocks
         elif global_config.GLOBAL_CONFIG in ['FOREX']:
@@ -44,17 +54,18 @@ class BaseStrategy(bt.Strategy):
             else:
                 leverage = self.broker.comminfo[None].params.leverage
             #return 1
-            stocks = int(self.broker.getvalue() / len(self.datas) / data.close[0] * .1 * leverage * 1)
+            stocks = int(self.broker.getvalue() / len([self.get_trading_securities()]) / data.close[0] * .1 * leverage * 1)
             if stocks == 0:
                 stocks = 1
             return stocks
 
         elif global_config.GLOBAL_CONFIG in ['FUTURES']:
+            #return 1
             comminfo = self.broker.comminfo[security_name]
             margin = comminfo.margin
             mult = comminfo.params.mult
             try:
-                max_contracts = int((self.broker.getvalue() / margin / len(self.datas))**(1.0 / 2.0))
+                max_contracts = int((self.broker.getvalue() / margin / len([self.get_trading_securities()]))**(1.0 / 2.0))
             except:
                 max_contracts = 1
             if max_contracts == 0:
