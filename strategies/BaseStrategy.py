@@ -3,12 +3,14 @@ import backtrader as bt
 import global_config
 
 class BaseStrategy(bt.Strategy):
+    params = (('name','asdf'),)
 
     def __init__(self):
 
         self.orders = dict()
         self.indicators = dict()
         self.brackets = dict()
+        self.per_strategy_positions = dict()
         for d in self.datas:
             self.orders[d.params.name] = None
             self.indicators[d.params.name] = dict()
@@ -17,6 +19,12 @@ class BaseStrategy(bt.Strategy):
         for d in self.datas:
             if d.datetime.date() == self.datetime.date():
                 yield d
+
+    def get_per_strategy_position(self,security_name):
+        return self.per_strategy_positions.get(security_name,0)
+
+    def set_per_strategy_position(self,security_name, size):
+        self.per_strategy_positions[security_name] = size
 
 
     def prenext(self):
@@ -29,7 +37,7 @@ class BaseStrategy(bt.Strategy):
     def log(self, txt, dt=None):
         dt = dt or self.datetime.date()
         t  = self.datetime.time()
-        print('%s %s, %s' % (dt.isoformat(), t, txt))
+        print('%s %s %s, %s' % (self.params.name, dt.isoformat(), t, txt))
 
     def add_indicator(self,data,name,ind,*args,**kwargs):
         self.indicators[data.params.name][name] = ind(data,*args,**kwargs)
@@ -38,11 +46,16 @@ class BaseStrategy(bt.Strategy):
         return self.indicators[data.params.name][name]
 
     def do_sizing_simple(self,security_name, data):
+        broker = self.broker
+        num_strats = len(self.cerebro.runningstrats)
         if global_config.GLOBAL_CONFIG in ['STOCK']:
             leverage = self.broker.comminfo[None].params.leverage
             #return 100
-
-            stocks = int(self.broker.getcash() / len([self.get_trading_securities()]) / data.close[0] * .6 * leverage * 1)
+            try:
+                #print("num trading securities",len([self.get_trading_securities()]))
+                stocks = int(self.broker.getvalue() / (len([self.get_trading_securities()])) / data.close[0] * .9 * leverage * 1 / num_strats)
+            except:
+                stocks = 1
             if stocks == 0:
                 print("num stocks is zero!")
                 stocks = 1
@@ -54,7 +67,7 @@ class BaseStrategy(bt.Strategy):
             else:
                 leverage = self.broker.comminfo[None].params.leverage
             #return 1
-            stocks = int(self.broker.getvalue() / len([self.get_trading_securities()]) / data.close[0] * .1 * leverage * 1)
+            stocks = int(self.broker.getvalue() / len([self.get_trading_securities()]) / data.close[0] * .19 * leverage * 1/ num_strats)
             if stocks == 0:
                 stocks = 1
             return stocks
@@ -65,7 +78,7 @@ class BaseStrategy(bt.Strategy):
             margin = comminfo.margin
             mult = comminfo.params.mult
             try:
-                max_contracts = int((self.broker.getvalue() / margin / len([self.get_trading_securities()]))**(1.0 / 2.0))
+                max_contracts = int((self.broker.getvalue() / margin / len([self.get_trading_securities()]) / num_strats)**(1.0 / 2.0))
             except:
                 max_contracts = 1
             if max_contracts == 0:
@@ -100,11 +113,11 @@ class BaseStrategy(bt.Strategy):
         if order.status in [order.Completed]:
             if order.isbuy():
                 pass
-                self.log('{} BUY EXECUTED, {}'.format(security_name, order.executed.price))
+                self.log('{} BUY EXECUTED, {} @ {}. comm {}'.format(security_name, order.executed.size, order.executed.price,order.executed.comm))
             elif order.issell():
                 pass
-                self.log('{} SELL EXECUTED, {}'.format(security_name, order.executed.price))
-
+                self.log('{} SELL EXECUTED, {} @ {}. comm {}'.format(security_name, order.executed.size, order.executed.price,order.executed.comm))
+            self.set_per_strategy_position(security_name,self.get_per_strategy_position(security_name)+order.executed.size)
             self.bar_executed = len(self)
 
         elif order.status in [order.Canceled]:

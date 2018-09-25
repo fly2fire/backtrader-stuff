@@ -1,5 +1,134 @@
 import backtrader as bt
 
+PINNACLE_COMMISSIONS = [
+# AP-AUS. INDEX
+# BC-BRENT CRUDE
+{'commission': 2.0, 'margin': 3150.0, 'mult': 1000.0, 'name': 'BC'},
+
+# FC-FEED CATTLE
+{'commission': 2.0, 'margin': 1500.0, 'mult': 500.0, 'name': 'FC'},
+# LC-LIVE CATTLE
+{'commission': 2.0, 'margin': 1500.0, 'mult': 400.0, 'name': 'LC'},
+# CC-COCOA
+{'commission': 2.0, 'margin': 1900.0, 'mult': 10.0, 'name': 'CC'},
+# KC-COFFEE
+{'commission': 2.0, 'margin': 2100.0, 'mult': 375.0, 'name': 'KC'},
+# CR-CRB INDEX
+{'commission': 2.0, 'margin': 4200.0, 'mult': 500.0, 'name': 'CR'},
+# HG-COPPER #1
+{'commission': 2.0, 'margin': 3100.0, 'mult': 25000.0, 'name': 'HG'},
+# C_-CORN
+{'commission': 2.0, 'margin': 800.0, 'mult': 5000.0, 'name': 'ZC'},
+# CT-COTTON
+{'commission': 2.0, 'margin': 2650.0, 'mult': 500.0, 'name': 'CT'},
+# CL-CRUDE OIL
+{'commission': 2.0, 'margin': 3100.0, 'mult': 1000.0, 'name': 'CL'},
+# ED-EURODOLLARS
+{'commission': 2.0, 'margin': 400.0, 'mult': 2500.0, 'name': 'ED'},
+# FF-FED. FUNDS
+{'commission': 2.0, 'margin': 500.0, 'mult': 4167.0, 'name': 'FF'},
+# CB-10YR CAN BOND
+{'commission': 2.0, 'margin': 2000.0, 'mult': 1000.0, 'name': 'CB'},
+# GC-GOLD
+{'commission': 2.0, 'margin': 3100.0, 'mult': 100.0, 'name': 'GC'},
+# HO-HEATING OIL
+{'commission': 2.0, 'margin': 3800.0, 'mult': 42000.0, 'name': 'HO'},
+
+# LH-LIVE HOGS
+{'commission': 2.0, 'margin': 1300.0, 'mult': 400.0, 'name': 'LH'},
+# BG-BRENT GAS
+# LB-LUMBER
+{'commission': 2.0, 'margin': 2750.0, 'mult': 110.0, 'name': 'LH'},
+# EC-EURODOLL COMP
+# O_-OATS
+{'commission': 2.0, 'margin': 675.0, 'mult': 5000.0, 'name': 'ZO'},
+# JO-ORNGE JUICE
+{'commission': 2.0, 'margin': 1000.0, 'mult': 150.0, 'name': 'OJ'},
+# PA-PALLADIUM
+{'commission': 2.0, 'margin': 6500.0, 'mult': 100.0, 'name': 'PA'},
+# PL-PLATINUM
+{'commission': 2.0, 'margin': 1900.0, 'mult': 50.0, 'name': 'PL'},
+# DA-MILK III
+{'commission': 2.0, 'margin': 850.0, 'mult': 2000.0, 'name': 'PL'},
+# SP-S&P500, DAY
+# SI-SILVER
+{'commission': 2.0, 'margin': 3600.0, 'mult': 5000.0, 'name': 'SI'},
+# S_-SOYBEANS
+{'commission': 2.0, 'margin': 3600.0, 'mult': 5000.0, 'name': 'SI'},
+# SM-SOYB. MEAL
+# BO-SOYBEAN OIL
+# SB-SUGAR #11
+# SF-SWISS FRANC
+# ER-MINI RUSSELL
+# US-TBONDS COMP
+# TY-TNOTE10 COMP
+# FB-TNOTE5, COMP
+# ZI-24HR SILVER
+# W_-WHEAT
+# KW-WHEAT, KC
+# MW-WHEAT, MINN
+# RB-RBOB GASOLINE
+# NK-NIKKEI INDX
+# DX-DOLLAR INDX
+# NG-NATURAL GAS
+# UA-TBONDS, DAY
+# TA-TNOTE10 DAY
+# AD-AUSTRAL. $
+# MD-S&P 400
+# NR-ROUGH RICE
+# GI-GOLDMAN SAK
+# XU-DJ EUROSTOXX
+# EN-MINI NASDAQ
+# RL-RUSS. 2000
+# DJ-DOW JONES
+# ES-MINI S&P500
+# ND-NASDAQ 100
+# MP-MEX. PESO
+# SC-SP500, COMP
+# AN-AUS $, COMP
+# BN-B PND, COMP
+# CN-CAN $, COMP
+# SN-SW. FR COMP
+# JN-YEN, COMP
+# FX-EURO, DAY
+# FN-EURO, COMP
+# AX-GERMAN DAX
+# DT-GERMAN BUND
+# LX-FTSE 100
+# GS-LONG GILT
+# SS-STERLING
+# FA-TNOTE5, DAY
+# TD-TNOTE2, DAY
+# TU-TNOTE2, COMP
+# YM-MINI D.J.
+# ZD-DOW JONE COMP
+# XX-DJ STOXX 50
+# HS-HANG SENG
+# CA-CAC 40 INDEX
+# UB-EURO BOBL
+# UZ-EURO SCHATZ
+# ZG-24HR GOLD
+# ZC-24HR CORN
+# ZL-24HR SOYOIL
+# ZM-24HR SOYMEAL
+# ZO-24HR OATS
+# ZR-24HR R. RICE
+# ZS-24HR SOYBEANS
+# ZW-24HR WHEAT
+# ZU-24HR CRUDEOIL
+# ZB-24HR RBOB
+# ZH-24HR HEAT OIL
+# ZN-24HR NATL GAS
+# ZK-24HR COPPER
+# ZA-24HR PALADIUM
+# ZP-24HR PLATINUM
+# ZF-24HR FCATTLE
+# ZT-24HR LCATTLE
+# ZZ-24HR LEANHOGS
+
+
+]
+
 ALL_COMMISSIONS = [
 
 # ES  CONTINUOUS E-MINI S&P 500 CONTRACT

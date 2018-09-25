@@ -6,7 +6,7 @@ import time
 import observers
 import utils
 import math
-
+import random
 
 import strategies.Donchian
 import strategies.MACross
@@ -17,7 +17,7 @@ import strategies.UpDownCandles
 import strategies.MACross
 import strategies.RSI
 
-from commissions import ALL_COMMISSIONS
+from commissions import ALL_COMMISSIONS, PINNACLE_COMMISSIONS
 import commissions
 import global_config
 
@@ -33,16 +33,22 @@ def main():
         #cerebro.broker.addcommissioninfo(comminfo)
         pass
     elif global_config.GLOBAL_CONFIG == 'FUTURES':
-        for com in ALL_COMMISSIONS:
+        for com in PINNACLE_COMMISSIONS:
             cerebro.broker.setcommission(**com)
     elif global_config.GLOBAL_CONFIG == 'STOCK':
-        cerebro.broker.setcommission(leverage=1,stocklike=True,commission=.0001,mult=1,margin=None,interest=.00,interest_long=True)
+        cerebro.broker.setcommission(leverage=2,stocklike=True,commission=.0005,mult=1,margin=None,interest=.00,interest_long=True)
 
-    cerebro.broker.set_cash(2500000)
+    cerebro.broker.set_cash(250000)
     cerebro.addobserver(observers.AcctValue)
     cerebro.addobserver(observers.AcctCash)
     utils.add_data(cerebro)
-    cerebro.addstrategy(strategies.SimpleMA.SimpleMA)
+    for x in range(0,10):
+        fast = random.randint(10,70)
+        slow = fast * random.randint(2,5)
+        name = str(x)
+        print("adding strat with fast {} slow {}".format(fast,slow))
+        cerebro.addstrategy(strategies.SimpleMA.SimpleMA,fast=fast,slow=slow,name=name,plot=False)
+
     cerebro.addobserver(bt.observers.DrawDown)
     cerebro.addanalyzer(bt.analyzers.SharpeRatio)
     cerebro.addanalyzer(bt.analyzers.SQN)
@@ -51,7 +57,7 @@ def main():
     cerebro.addanalyzer(bt.analyzers.TimeDrawDown)
     cerebro.addanalyzer(bt.analyzers.GrossLeverage)
     cerebro.addanalyzer(bt.analyzers.PeriodStats)
-    cerebro.addanalyzer(bt.analyzers.Returns)
+    #cerebro.addanalyzer(bt.analyzers.Returns)
     cerebro.addanalyzer(bt.analyzers.SharpeRatio_A)
     cerebro.addanalyzer(bt.analyzers.TradeAnalyzer)
 
@@ -70,6 +76,13 @@ def main():
     strat = ret[0]
     end = time.time()
     print("simulation took",end-start,"seconds")
+    #cerebro wants to plot a different plot for each strategy even if they share the same broker
+    #for our purposes that isn't really necessary, so here let's just kick out everything but the 1st
+    #strategy so we only plot one
+    new_runstrats = []
+    for s in cerebro.runstrats:
+        new_runstrats.append([s[0]])
+    cerebro.runstrats = new_runstrats
     cerebro.plot()
 
 

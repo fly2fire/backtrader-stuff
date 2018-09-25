@@ -194,12 +194,32 @@ class MyPandasData(bt.feeds.PandasData):
 
 def add_data(cerebro):
     files = get_files_by_file_size(STOCKS_BASE_PATH,reverse=True)
-    files = files[:int(len(files)/2)]
+    files = files[:int(len(files)/8)]
     print(files[0])
     random.shuffle(files)
-    for txt in  files[:100]:
+    for txt in  ['./SPY.txt','./IWM.txt','EFA.txt','LQD.txt','VEA.txt','AGG.txt',]:
         print("adding",txt)
-        if 'daily' in txt:
+        if 'CL' in txt:
+            data = btfeed.GenericCSVData(dataname=txt,
+                                         dtformat='%m/%d/%Y',
+                                         # tmformat='%H:%M',
+                                         name=os.path.splitext(os.path.basename(txt))[0],
+                                         timeframe=bt.TimeFrame.Days,
+                                         fromdate=datetime.datetime(1900, 1, 1),
+                                         todate=datetime.datetime(2018, 12, 1),
+                                         datetime=0,
+                                         time=-1,
+                                         open=1,
+                                         high=2,
+                                         low=3,
+                                         close=4,
+                                         volume=5,
+                                         openinterest=6,
+                                         plot=False,
+                                         preload=True,
+                                         runonce=True
+                                         )
+        elif True:# 'daily' in txt:
             data = btfeed.GenericCSVData(dataname=txt,
                                      dtformat='%m/%d/%Y',
                                      #tmformat='%H:%M',
