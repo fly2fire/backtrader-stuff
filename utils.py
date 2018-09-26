@@ -27,6 +27,45 @@ FOREX_FUTURES = [
     BASE_PATH + 'kibot_data/cont_futures/60min/PX.txt',
 ]
 
+CLC_FUTURES_DAILIES = [
+
+'/home/forrest/daily_futures/AD_REV.CSV',
+'/home/forrest/daily_futures/AN_REV.CSV',
+'/home/forrest/daily_futures/AP_REV.CSV',
+'/home/forrest/daily_futures/AX_REV.CSV',
+
+'/home/forrest/daily_futures/BC_REV.CSV',
+'/home/forrest/daily_futures/BG_REV.CSV',
+'/home/forrest/daily_futures/BN_REV.CSV',
+'/home/forrest/daily_futures/BO_REV.CSV',
+
+'/home/forrest/daily_futures/C__REV.CSV',
+'/home/forrest/daily_futures/CA_REV.CSV',
+'/home/forrest/daily_futures/CB_REV.CSV',
+'/home/forrest/daily_futures/CC_REV.CSV',
+'/home/forrest/daily_futures/CL_REV.CSV',
+'/home/forrest/daily_futures/CN_REV.CSV',
+'/home/forrest/daily_futures/CR_REV.CSV',
+'/home/forrest/daily_futures/CT_REV.CSV',
+
+#'/home/forrest/daily_futures/DA_REV.CSV',
+'/home/forrest/daily_futures/DJ_REV.CSV',
+'/home/forrest/daily_futures/DT_REV.CSV',
+'/home/forrest/daily_futures/DX_REV.CSV',
+
+'/home/forrest/daily_futures/EC_REV.CSV',
+'/home/forrest/daily_futures/ED_REV.CSV',
+'/home/forrest/daily_futures/EN_REV.CSV',
+'/home/forrest/daily_futures/ER_REV.CSV',
+'/home/forrest/daily_futures/ES_REV.CSV',
+
+'/home/forrest/daily_futures/FA_REV.CSV',
+'/home/forrest/daily_futures/FB_REV.CSV',
+#'/home/forrest/daily_futures/FC_REV.CSV',
+'/home/forrest/daily_futures/FF_REV.CSV',
+
+]
+
 DAILIES_FUTURES = [
     BASE_PATH + 'kibot_data/cont_futures/daily/GC.txt',
     # BASE_PATH + 'kibot_data/cont_futures/daily/PA.txt',
@@ -139,6 +178,7 @@ BASE_PATH + 'kibot_data/stocks/daily/SPY.txt',
 
 STOCKS_BASE_PATH = BASE_PATH + 'kibot_data/stocks/daily'
 FOREX_BASE_PATH = BASE_PATH + 'kibot_data/forex/360min'
+CLC_FUTURES_PATH = '/home/forrest/daily_futures/'
 
 def get_files_by_file_size(dirname, reverse=False):
     """ Return list of file paths in directory sorted by file size """
@@ -193,33 +233,13 @@ class MyPandasData(bt.feeds.PandasData):
     params=(('time',1),)
 
 def add_data(cerebro):
-    files = get_files_by_file_size(STOCKS_BASE_PATH,reverse=True)
-    files = files[:int(len(files)/8)]
-    print(files[0])
-    random.shuffle(files)
-    for txt in  ['./SPY.txt','./IWM.txt','EFA.txt','LQD.txt','VEA.txt','AGG.txt',]:
+    files = get_files_by_file_size(CLC_FUTURES_PATH,reverse=True)
+    #files = files[:int(len(files)/8)]
+    #print(files[0])
+    #random.shuffle(files)
+    for txt in CLC_FUTURES_DAILIES:
         print("adding",txt)
-        if 'CL' in txt:
-            data = btfeed.GenericCSVData(dataname=txt,
-                                         dtformat='%m/%d/%Y',
-                                         # tmformat='%H:%M',
-                                         name=os.path.splitext(os.path.basename(txt))[0],
-                                         timeframe=bt.TimeFrame.Days,
-                                         fromdate=datetime.datetime(1900, 1, 1),
-                                         todate=datetime.datetime(2018, 12, 1),
-                                         datetime=0,
-                                         time=-1,
-                                         open=1,
-                                         high=2,
-                                         low=3,
-                                         close=4,
-                                         volume=5,
-                                         openinterest=6,
-                                         plot=False,
-                                         preload=True,
-                                         runonce=True
-                                         )
-        elif True:# 'daily' in txt:
+        if  'daily' in txt or 'dailies' in txt:
             data = btfeed.GenericCSVData(dataname=txt,
                                      dtformat='%m/%d/%Y',
                                      #tmformat='%H:%M',

@@ -1,12 +1,12 @@
 import backtrader as bt
 
 import global_config
+from collections import defaultdict
 
 class BaseStrategy(bt.Strategy):
     params = (('name','asdf'),)
 
     def __init__(self):
-
         self.orders = dict()
         self.indicators = dict()
         self.brackets = dict()
@@ -15,10 +15,21 @@ class BaseStrategy(bt.Strategy):
             self.orders[d.params.name] = None
             self.indicators[d.params.name] = dict()
 
+
     def get_trading_securities(self):
+        ret = []
         for d in self.datas:
             if d.datetime.date() == self.datetime.date():
                 yield d
+
+    def get_per_strategy_num_positions(self):
+        return len([x for x in self.per_strategy_positions.values() if x != 0])
+
+    def get_total_num_positions(self):
+        return sum([s.get_per_strategy_num_positions() for s in self.cerebro.runningstrats])
+
+    def get_total_possible_positions(self):
+        return len(list(self.get_trading_securities())) * len(self.cerebro.runningstrats)
 
     def get_per_strategy_position(self,security_name):
         return self.per_strategy_positions.get(security_name,0)
@@ -26,6 +37,13 @@ class BaseStrategy(bt.Strategy):
     def set_per_strategy_position(self,security_name, size):
         self.per_strategy_positions[security_name] = size
 
+    def get_per_strategy_value(self, security_name):
+        return self.get_per_strategy_position(security_name) * self.get_data_from_name(security_name).close[0]
+
+    def get_data_from_name(self,security_name):
+        for d in self.datas:
+            if d.params.name == security_name:
+                return d
 
     def prenext(self):
         self.next()
@@ -52,8 +70,15 @@ class BaseStrategy(bt.Strategy):
             leverage = self.broker.comminfo[None].params.leverage
             #return 100
             try:
-                #print("num trading securities",len([self.get_trading_securities()]))
-                stocks = int(self.broker.getvalue() / (len([self.get_trading_securities()])) / data.close[0] * .9 * leverage * 1 / num_strats)
+                #print("per strategy value",self.get_per_strategy_value(security_name))
+                free_positions = (self.get_total_possible_positions() - self.get_total_num_positions()) + 1
+                #print("free positions",free_positions)
+                stocks = self.broker.getvalue() / (self.get_total_possible_positions() + 1)
+                stocks /= data.close[0]
+                stocks *= .99
+                stocks *= leverage
+                stocks *= 1
+                stocks = int(stocks)
             except:
                 stocks = 1
             if stocks == 0:
@@ -73,12 +98,12 @@ class BaseStrategy(bt.Strategy):
             return stocks
 
         elif global_config.GLOBAL_CONFIG in ['FUTURES']:
-            #return 1
+            return 1
             comminfo = self.broker.comminfo[security_name]
             margin = comminfo.margin
             mult = comminfo.params.mult
             try:
-                max_contracts = int((self.broker.getvalue() / margin / len([self.get_trading_securities()]) / num_strats)**(1.0 / 2.0))
+                max_contracts = int((self.broker.getvalue() / margin / len([self.get_trading_securities()]) / num_strats)**(1.0 / 6.0))
             except:
                 max_contracts = 1
             if max_contracts == 0:
@@ -113,19 +138,20 @@ class BaseStrategy(bt.Strategy):
         if order.status in [order.Completed]:
             if order.isbuy():
                 pass
-                self.log('{} BUY EXECUTED, {} @ {}. comm {}'.format(security_name, order.executed.size, order.executed.price,order.executed.comm))
+                self.log('{} BUY EXECUTED, {} @ {}. comm {} ref: {}'.format(security_name, order.executed.size, order.executed.price,order.executed.comm,order.ref))
             elif order.issell():
                 pass
-                self.log('{} SELL EXECUTED, {} @ {}. comm {}'.format(security_name, order.executed.size, order.executed.price,order.executed.comm))
+                self.log('{} SELL EXECUTED, {} @ {}. comm {} ref: {}'.format(security_name, order.executed.size, order.executed.price,order.executed.comm,order.ref))
             self.set_per_strategy_position(security_name,self.get_per_strategy_position(security_name)+order.executed.size)
             self.bar_executed = len(self)
 
+
         elif order.status in [order.Canceled]:
-            self.log('Order Canceled')
+            self.log('Order Canceled ref: {}'.format(order.ref))
         elif order.status in [order.Margin]:
-            self.log('Order Margin')
+            self.log('Order Margin ref: {}'.format(order.ref))
         elif order.status in [order.Rejected]:
-            self.log('Order Rejected')
+            self.log('Order Rejected ref: {}'.format(order.ref))
 
         if order.ref in self.brackets:
             #did we cancel the parent? if so we need to cancel the children

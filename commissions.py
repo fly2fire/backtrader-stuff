@@ -38,7 +38,7 @@ PINNACLE_COMMISSIONS = [
 {'commission': 2.0, 'margin': 1300.0, 'mult': 400.0, 'name': 'LH'},
 # BG-BRENT GAS
 # LB-LUMBER
-{'commission': 2.0, 'margin': 2750.0, 'mult': 110.0, 'name': 'LH'},
+{'commission': 2.0, 'margin': 2750.0, 'mult': 110.0, 'name': 'LB'},
 # EC-EURODOLL COMP
 # O_-OATS
 {'commission': 2.0, 'margin': 675.0, 'mult': 5000.0, 'name': 'ZO'},
@@ -49,12 +49,12 @@ PINNACLE_COMMISSIONS = [
 # PL-PLATINUM
 {'commission': 2.0, 'margin': 1900.0, 'mult': 50.0, 'name': 'PL'},
 # DA-MILK III
-{'commission': 2.0, 'margin': 850.0, 'mult': 2000.0, 'name': 'PL'},
+{'commission': 2.0, 'margin': 850.0, 'mult': 2000.0, 'name': 'DA'},
 # SP-S&P500, DAY
 # SI-SILVER
 {'commission': 2.0, 'margin': 3600.0, 'mult': 5000.0, 'name': 'SI'},
 # S_-SOYBEANS
-{'commission': 2.0, 'margin': 3600.0, 'mult': 5000.0, 'name': 'SI'},
+{'commission': 2.0, 'margin': 3600.0, 'mult': 5000.0, 'name': 'ZS'},
 # SM-SOYB. MEAL
 # BO-SOYBEAN OIL
 # SB-SUGAR #11

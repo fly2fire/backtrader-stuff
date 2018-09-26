@@ -19,12 +19,13 @@ class SimpleMA(strategies.BaseStrategy.BaseStrategy):
             self.add_indicator(d,'really_slow',bt.ind.EMA,period=100)
 
     def next(self):
-        #print(self.params.name)
         #if not (datetime.time(10,00) <= self.data.datetime.time() <= datetime.time(16, 00)):
         #    return
+        weekday = self.datetime.date().weekday()
         for i,d in enumerate(self.get_trading_securities()):
+
             security_name = d.params.name
-            #print(security_name)
+            #print(security_name,"is trading")
 
             contracts = self.do_sizing_simple(security_name,d)
 
@@ -32,15 +33,18 @@ class SimpleMA(strategies.BaseStrategy.BaseStrategy):
             slow = self.get_indicator(d,'slow')
             really_slow = self.get_indicator(d,'really_slow')
             pos = self.get_per_strategy_position(security_name)
-            if fast[0] > slow[0] and fast[-1] < slow[-1]:
+            if fast[0] > slow[0]:
                 if pos <= 0:
                     if pos < 0:
-                        print("should be closing", self.get_per_strategy_position(security_name))
-                        self.close(d,size=pos)
-                    self.buy(d,size=contracts)
-            elif fast[0] < slow[0] and fast[-1] > slow[-1]:
+                        print("closing",pos)
+                        self.close(data=d,size=pos)
+                    o = self.buy(d,size=contracts)
+                    print("trying to buy ", contracts, "of", security_name, "@", d.close[0], "cash:", self.broker.getcash(),"ref:",o.ref)
+            elif fast[0] < slow[0]:
                 if pos >= 0:
                     if pos > 0:
-                        print("should be closing",self.get_per_strategy_position(security_name))
-                        self.close(d,size=pos)
-                    #self.sell(d,size=contracts)
+                        print("closing",pos)
+                        self.close(data=d,size=pos)
+                    o = self.sell(d,size=contracts)
+                    print("trying to short ", contracts, "of", security_name, "@", d.close[0], "cash:",
+                          self.broker.getcash(), "ref:", o.ref)
