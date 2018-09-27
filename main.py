@@ -36,18 +36,18 @@ def main():
         for com in PINNACLE_COMMISSIONS:
             cerebro.broker.setcommission(**com)
     elif global_config.GLOBAL_CONFIG == 'STOCK':
-        cerebro.broker.setcommission(leverage=4,stocklike=True,commission=.0000,mult=1,margin=None,interest=.00,interest_long=True)
+        cerebro.broker.setcommission(leverage=2,stocklike=True,commission=.0005,mult=1,margin=None,interest=.00,interest_long=True)
 
     cerebro.broker.set_cash(250000)
     cerebro.broker.set_shortcash(False)
     cerebro.addobserver(observers.AcctValue)
     cerebro.addobserver(observers.AcctCash)
     utils.add_data(cerebro)
-    for x in range(0,1):
-        fast = random.randint(20,70)
-        slow = fast * random.randint(2,5)
-        fast = 20
-        slow = 100
+    for x in range(0,5):
+        fast = random.randint(40,80)
+        slow = fast * random.randint(2,4)
+        #fast = 20
+        #slow = 100
         name = str(x)
         print("adding strat with fast {} slow {}".format(fast,slow))
         cerebro.addstrategy(strategies.SimpleMA.SimpleMA,fast=fast,slow=slow,name=name,plot=False)
