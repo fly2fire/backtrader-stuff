@@ -22,7 +22,7 @@ STEVENS_COMMISSIONS = [
 # "BO","ZL","CBOT Soybean Oil","CME","1961-09-20","U1961","FHKNQUVZ","2","60,000 pounds (lbs) (~ 27 metric tons)","1/100 of a cent ($0.0001) per pound ($6.00 per contract)","Cents per pound","Crude soybean oil meeting exchange-approved grades and standards-see exchange Rules and Regulations for exact specifications.","600"
 {'margin': 600.0, 'mult': 600.0, 'name': 'BO'},
 # "B","","ICE Brent Crude Oil","ICE","1993-12-16","F1994","FGHJKMNQUVXZ","12","1,000 barrels","US dollars and cents","one cent per barrel","The ICE Brent Crude futures contract is a deliverable contract based on EFP delivery with an option to cash settle, i.e the ICE Brent Index price for the day following the last trading day of the futures contract.","1000"
-{'margin': 2350.0, 'mult': 1000.0, 'name': 'B'},
+#{'margin': 2350.0, 'mult': 1000.0, 'name': 'B'},
 # "SI","SI","NYMEX Silver","CME","1964-03-30","H1964","FHKNUZ","1","5,000 troy ounces","Outright transactions including EFP: $0.005 per troy ounce. Straddle or spread transactions and settlement prices: $0.001 per troy ounce.","U.S. Cents per troy ounce","Silver delivered under this contract shall assay to a minimum of 999 fineness.","5000"
 {'margin': 3600.0, 'mult': 5000.0, 'name': 'SI'},
 # "GC","GC","NYMEX Gold","CME","1975-02-25","G1975","GJMQVZ","2","100 troy ounces","$0.10 per troy ounce","U.S. Dollars and Cents per troy ounce","Gold delivered under this contract shall assay to a minimum of 995 fineness.","100"
@@ -82,7 +82,8 @@ STEVENS_COMMISSIONS = [
 # "LC","LE","CME Live Cattle","CME","1965-04-20","J1965","GJMQVZ","2","40,000 pounds (~18 metric tons)","$.00025 per pound (=$10 per contract)","Cents per pound","55% Choice, 45% Select, Yield Grade 3 live steers (or live heifers, effective with the August 2015 contract)","400"
 {'margin': 1500.0, 'mult': 400.0, 'name': 'LC'},
 # "RB","RB","NYMEX Gasoline","CME","2005-12-30","F2006","FGHJKMNQUVXZ","2","42,000 gallons","$0.0001 per gallon","U.S. dollars and cents per gallon.","hydrocarbon oil free from alkali, mineral acid, grit, fibrous or other foreign matter, meeting the specifications as are in effect for downstream parties at the time of delivery meeting the requirements of Colonial Pipeline Company (Atlanta, Georgia) for: Fungible F Grade, Reformulated Regular Gasoline Blendstock (RBOB) for blending with 10% Denatured Fuel Ethanol (92% Purity) as defined in ASTM D-4806 as listed by the Colonial Pipeline as being properly designated for sale in New York and New Jersey in accordance with EPA regulations; provided, however, and notwithstanding anything to the contrary in the Colonial Pipeline specifications, the specifications set forth in Sections 101.1. through 101.5.","42000"
-{'margin': 4000.0, 'mult': 42000.0, 'name': 'RB'},
+#XXX: RB throws everything off by a lot
+#{'margin': 4000.0, 'mult': 42000.0, 'name': 'RB'},
 # "KW","KE","CME Kansas City Wheat","CME","1976-09-21","U1976","HKNUZ","2","5,000 bushels (~136 metric tons)","1/4 cent per bushel ($12.50 per contract)","Cents and quarter cents per bushel","No. 2 at contract price with a maximum of 10 IDK per 100 grams; No. 1 at a 1 1/2-cent premium. Deliverable grades of HRW shall contain a minimum 11% protein level. However, protein levels of less than 11%, but equal to or greater than 10.5% are deliverable at a ten cent (10) discount to contract price. Protein levels of less than 10.5% are not deliverable. When warehouse receipts are surrendered to the issuer for load-out, the taker of delivery shall have the option to, at the takers expense, request in the written load-out instructions that the wheat contain no more than 2 ppm of deoxynivalenol (vomitoxin). A determination of the level of vomitoxin shall be made at the point of origin by the Federal Grain Inspection Service or such other third party inspection service mutually agreeable to the maker and taker of delivery. A determination of the level of vomitoxin shall be based on the average test results of the wheat loaded in a single day from a single warehouse for each taker of delivery.","50"
 {'margin': 1600.0, 'mult': 50.0, 'name': 'KW'},
 # "TF","","ICE Russell 2000 Index Mini","ICE","2007-03-16","H2007","HMUZ","2","$100 times the Index","Index points, to two decimal placse",".10 Index points","Cash settlement to a special opening calculation of the Russell 2000 Index based on the opening prices of the component stocks on the third Friday of the contract month. Please see Exchange Rules 19.04 and 19.26 for additional information.","100"
@@ -146,7 +147,8 @@ STEVENS_COMMISSIONS = [
 # "FBTP","","EUREX Euro-BTP","EUREX","2010-03-08","H2010","HMUZ","2","One Italian debt security with valute at maturity of EUR100000","0.01 percent = EUR10","Percent of the par value","Italian debt security  with remaining term of 8.5 to 11 years with a 6% coupon.",""
 #{'margin': 0.0, 'mult': 0.0, 'name': ''},
 # "MP","","CME Mexican Peso","CME","1995-06-19","M1995","HMUZ","2","500,000 Mexican pesos","$.00001 per Mexican peso increments ($5.00/contract)","US Dollars and cents","500,000 Mexican pesos",""
-{'margin': 1200.0, 'mult': 500000.0, 'name': 'MP'},
+#TODO: pesos are also messed up
+#{'margin': 1200.0, 'mult': 500000.0, 'name': 'MP'},
 # "Z","","LIFFE FTSE 100 Index","LIFFE","1984-06-29","M1984","HMUZ","2"," 10 per index point",".5 index points = 5","Index Points","None, this contract is cash settled",""
 #{'margin': 0.0, 'mult': 0.0, 'name': ''},
 # "DA","","CME Class III Milk","CME","1997-12-31","Z1997","FGHJKMNQUVXZ","2","200,000 lbs. of Class III Milk ( 90 metric tons)","$0.01 per cwt (= $20.00 per contract)","Cents per hundredweight (cwt.)","Class III Milk",""
@@ -160,6 +162,55 @@ STEVENS_COMMISSIONS = [
 # "R","","LIFFE Long Gilt","LIFFE","1990-09-26","U1990","HMUZ","2","GBP100,000 nominal value notional Gilt with 4% coupon","0.01 (10)","Per GBP100 nominal","Delivery may be made of any gilts on the List of Deliverable Gilts in respect of a delivery month of an Exchange Contract, as published by the Exchange on or before the tenth business day prior to the First Notice Day of such delivery month. Holders of long positions on any day within the Notice Period may be delivered against during the delivery month. All gilt issues included in the List will have the following characteristics: having terms as to redemption such as provide for redemption of the entire gilt issue in a single instalment such that the length of time to the maturity date from, and excluding, the first date of the relevant delivery month is within the maturity range for the relevant Exchange Contract specified by the Board in the Contract Details; having no terms permitting or requiring early redemption; bearing interest at a single fixed rate throughout the term of the issue payable in arrears semi-annually (except in the case of the first interest payment period which may be more or less than six months); being denominated and payable as to the principal and interest only in Pounds and pence; being fully paid or, in the event that the gilt issue is in its first period and is partly paid, being anticipated by the Board to be fully paid on or before the Last Notice Day of the relevant delivery month; not being convertible; not being in bearer form; having been admitted to the Official List of the UK Listing Authority; and being anticipated by the Board to have on one or more days in the delivery month an aggregate principal amount outstanding of not less than 1.5 billion which, by its terms and conditions, if issued in more than one tranche or tap or issue, is fungible. UK Government bonds eligible for the list of deliverable Gilts in the Long Gilt futures contract must have a coupon within a 1% - 7% coupon range inclusive.",""
 #{'margin': 0.0, 'mult': 0.0, 'name': ''},
 ]
+
+STEVENS_MARGIN_RATIOS = {
+'VX': 0.6095496105655266,
+'AD': 0.017172688556120346,
+'BO': 0.03496014543420501,
+'BP': 0.018139218502002872,
+'C': 0.0440771349862259,
+'CD': 0.014929248344800727,
+'CL': 0.04401285454799497,
+'DA': 0.02480466327669602,
+'EC': 0.015544479175466757,
+'ED': 0.0016439763678397124,
+'ES': 0.04121586810922205,
+'FF': 0.0009812857979652112,
+'FV': 0.00604738414507052,
+'GC': 0.025913665696994014,
+'HG': 0.04384724186704384,
+'HO': 0.0393142274464623,
+'JY': 0.01794526693584567,
+'KW': 0.061420345489443376,
+'LC': 0.032365252664739136,
+'LN': 0.05605381165919283,
+'MD': 0.008131290594476672,
+'NE': 0.01799370220422852,
+'NG': 0.045177698949200186,
+'NK': 0.04348735103491533,
+'NQ': 0.04051249958828761,
+'PA': 0.06114194337315399,
+'PL': 0.045949214026602174,
+'S': 0.05529411764705883,
+'SF': 0.019927189116689017,
+'SI': 0.04999652801888758,
+'SM': 0.05340151466114312,
+'TU': 0.0021830045973602256,
+'TY': 0.008843268851164626,
+'US': 0.016366466533244386,
+'W': 0.05990338164251208,
+'YM': 0.05015329876225444,
+'ATW': 0.5873140172278778,
+'B': 0.03024219493990168,
+'CC': 0.08833100883310088,
+'CT': 0.06724181679776707,
+'DX': 0.01919529075533469,
+'G': 0.043615898698557864,
+'KC': 0.05728900255754476,
+'OJ': 0.04510599909788002,
+'SB': 0.09531665927240461,
+
+}
 
 PINNACLE_COMMISSIONS = [
 # AP-AUS. INDEX

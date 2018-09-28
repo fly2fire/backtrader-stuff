@@ -2,6 +2,7 @@ import backtrader as bt
 
 import global_config
 from collections import defaultdict
+import commissions
 
 class BaseStrategy(bt.Strategy):
     params = (('name','asdf'),)
@@ -60,6 +61,14 @@ class BaseStrategy(bt.Strategy):
     def add_indicator(self,data,name,ind,*args,**kwargs):
         self.indicators[data.params.name][name] = ind(data,*args,**kwargs)
 
+    def update_margins(self):
+        for data in self.get_trading_securities():
+            security_name = data.params.name
+            comminfo = self.broker.comminfo[security_name]
+            ratio = commissions.STEVENS_MARGIN_RATIOS[security_name]
+            comminfo.params.margin = data.close[0] * comminfo.params.mult * ratio
+#            comminfo.margin = data.close[0] * comminfo.params.mult * ratio
+
     def get_indicator(self,data,name):
         return self.indicators[data.params.name][name]
 
@@ -98,12 +107,14 @@ class BaseStrategy(bt.Strategy):
             return stocks
 
         elif global_config.GLOBAL_CONFIG in ['FUTURES']:
-            return 1
+            #return 1
             comminfo = self.broker.comminfo[security_name]
-            margin = comminfo.margin
+            #backtrader doesnt allow us to have changing margins, which kinda sucks. instead, we emulate it here
+            #by assuming a fairly safe margin of 10%
             mult = comminfo.params.mult
+            margin = comminfo.params.margin
             try:
-                max_contracts = int((self.broker.getvalue() / margin / len([self.get_trading_securities()]) / num_strats)**(1.0 / 6.0))
+                max_contracts = int((self.broker.getvalue() / margin / (self.get_total_possible_positions()+1))**(1.0/1.9))
             except:
                 max_contracts = 1
             if max_contracts == 0:

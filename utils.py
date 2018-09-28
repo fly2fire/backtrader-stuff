@@ -66,6 +66,13 @@ CLC_FUTURES_DAILIES = [
 
 ]
 
+STEVENS_FUTURES = [
+BASE_PATH + 'stevens_futures2/CME_CL1_FW.csv'
+
+]
+
+STEVENS_FUTURES = [x for x in os.listdir(BASE_PATH + 'stevens_futures2/') if '1_FW' in x]
+
 DAILIES_FUTURES = [
     BASE_PATH + 'kibot_data/cont_futures/daily/GC.txt',
     # BASE_PATH + 'kibot_data/cont_futures/daily/PA.txt',
@@ -237,9 +244,50 @@ def add_data(cerebro):
     #files = files[:int(len(files)/8)]
     #print(files[0])
     #random.shuffle(files)
-    for txt in CLC_FUTURES_DAILIES:
+    stevens_added_commissions = [x['name'] for x in commissions.STEVENS_COMMISSIONS ]
+    print(stevens_added_commissions)
+    #stevens_added_commissions = ['CL', 'LN', 'W', 'NK', 'S', 'ES', 'MD', 'AD', 'BO', 'B', 'SI', 'GC', 'PA', 'HO',
+    #                             'SF', 'PL', 'C', 'SM', 'FV', 'NG', 'ATW', 'TY', 'KC', 'BP', 'JY', 'CD', 'DX', 'ED',
+    #                             'EC', 'CT', 'G', 'CC', 'OJ', 'LC', 'RB', 'KW', 'NE', 'NQ', 'VX', 'US', 'FF', 'HG', 'SB', 'TU', 'MP', 'DA', 'YM']
+
+    #stevens_added_commissions = ['CL', 'LN', 'W', 'NK', 'S', 'ES', 'MD', 'AD', 'BO', 'B', 'SI', 'GC', 'PA', 'HO',
+    #                             'SF', 'PL', 'C', 'SM', 'FV', 'NG', 'ATW','TY', 'KC', 'BP', 'JY', 'CD', 'DX', 'ED',
+    #                             'EC', 'CT', 'G', 'CC', 'OJ','LC','KW', 'NE', 'NQ', 'VX', 'US','FF', 'HG', 'SB','TU', 'DA', 'YM']
+    #stevens_added_commissions = ['CL']
+
+    for txt in STEVENS_FUTURES:
+        txt = os.path.join(BASE_PATH,'stevens_futures2',txt)
+
         print("adding",txt)
-        if  'daily' in txt or 'dailies' in txt:
+        if 'steven' in txt:
+            name = os.path.splitext(os.path.basename(txt))[0]
+            name = name.split('_')[1]
+            name = name.replace('1','')
+            if name not in stevens_added_commissions:
+                continue
+            print(name)
+            data = btfeed.GenericCSVData(
+                                    dataname=txt,
+                                    dtformat='%Y-%m-%d',
+                                    name = name,
+                                    timeframe=bt.TimeFrame.Days,
+                                    fromdate=datetime.datetime(1900, 1, 1),
+                                    todate=datetime.datetime(2018, 12, 1),
+                                    datetime=5,
+                                    #time=-1,
+                                    open=6,
+                                    high=7,
+                                    low=8,
+                                    close=9,
+                                    volume=10,
+                                    openinterest=11,
+                                    plot=False,
+                                    preload=True,
+                                    runonce=True,
+                                    reverse=True,
+                                    separator=',',
+                                    )
+        elif  'daily' in txt or 'dailies' in txt:
             data = btfeed.GenericCSVData(dataname=txt,
                                      dtformat='%m/%d/%Y',
                                      #tmformat='%H:%M',

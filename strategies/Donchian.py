@@ -10,12 +10,14 @@ import indicators
 import strategies.BaseStrategy
 
 class Donchian(strategies.BaseStrategy.BaseStrategy):
+    params = (('entry', 5),('exit',20),('name','asdf'))
+
 
     def __init__(self):
         super().__init__()
         for d in self.datas:
-            self.add_indicator(d,'dc20',indicators.DonchianChannel,period=24)
-            self.add_indicator(d,'dc10',indicators.DonchianChannel,period=10)
+            self.add_indicator(d,'entry',indicators.DonchianChannel,period=self.params.entry)
+            self.add_indicator(d,'exit',indicators.DonchianChannel,period=self.params.exit)
             #self.add_indicator(d,'ma',bt.ind.SMA,period=40)
             self.add_indicator(d,'atr',bt.ind.ATR,period=100)
 
@@ -31,13 +33,13 @@ class Donchian(strategies.BaseStrategy.BaseStrategy):
             #date = self.data.datetime.date()
             #valid_til = datetime.datetime(year=date.year,month=date.month,day=date.day,hour=23,minute=45)
             contracts = self.do_sizing_simple(security_name, d)
-            dc20 = self.get_indicator(d,'dc20')
-            dc10 = self.get_indicator(d,'dc10')
-            if self.getposition(d).size > 0 and dc20.exitshort[0]:
+            entry = self.get_indicator(d,'entry')
+            exit = self.get_indicator(d,'exit')
+            if self.getposition(d).size > 0 and entry.exitshort[0]:
                     self.close(data=d)
-            elif self.getposition(d).size > 0 and dc20.exitlong[0]:
+            elif self.getposition(d).size > 0 and entry.exitlong[0]:
                 self.close(data=d)
-            if dc20.buysig[0]:
+            if entry.buysig[0]:
                 if self.getposition(d).size > 0:
                     continue
                 elif self.getposition(d).size < 0:
@@ -46,7 +48,7 @@ class Donchian(strategies.BaseStrategy.BaseStrategy):
                 #self.orders[security_name] = self.sell(data=d,size=contracts)
                 o = self.orders[security_name] = self.sell_bracket(data=d, size=contracts,exectype=bt.Order.Market,stopprice=d.close[0]*.99, limitprice=d.close[0]*1.01)
                 self.record_bracket(o)
-            elif dc20.sellsig[0]:#  and ma[0] < ma[-1]:
+            elif entry.sellsig[0]:#  and ma[0] < ma[-1]:
                 if self.getposition(d).size < 0:
                     continue
                 elif self.getposition(d).size > 0:

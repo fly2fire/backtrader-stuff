@@ -19,9 +19,12 @@ class SimpleMA(strategies.BaseStrategy.BaseStrategy):
             self.add_indicator(d,'really_slow',bt.ind.EMA,period=100)
 
     def next(self):
+        self.update_margins()
         #if not (datetime.time(10,00) <= self.data.datetime.time() <= datetime.time(16, 00)):
         #    return
         weekday = self.datetime.date().weekday()
+        if weekday not in [0,4]:
+            return
         for i,d in enumerate(self.get_trading_securities()):
 
             security_name = d.params.name
@@ -36,15 +39,19 @@ class SimpleMA(strategies.BaseStrategy.BaseStrategy):
             if fast[0] > slow[0]:
                 if pos <= 0:
                     if pos < 0:
-                        print("closing",pos)
-                        self.close(data=d,size=pos)
-                    o = self.buy(d,size=contracts)
-                    print("trying to buy ", contracts, "of", security_name, "@", d.close[0], "cash:", self.broker.getcash(),"ref:",o.ref)
+                        if weekday == 4:
+                            print("closing",pos)
+                            self.close(data=d,size=pos)
+                    if weekday == 0:
+                        o = self.buy(d,size=contracts)
+                        print("trying to buy ", contracts, "of", security_name, "@", d.close[0], "cash:", self.broker.getcash(),"ref:",o.ref)
             elif fast[0] < slow[0]:
                 if pos >= 0:
                     if pos > 0:
-                        print("closing",pos)
-                        self.close(data=d,size=pos)
-                    o = self.sell(d,size=contracts)
-                    print("trying to short ", contracts, "of", security_name, "@", d.close[0], "cash:",
+                        if weekday == 4:
+                            print("closing",pos)
+                            self.close(data=d,size=pos)
+                    if weekday == 0:
+                        o = self.sell(d,size=contracts)
+                        print("trying to short ", contracts, "of", security_name, "@", d.close[0], "cash:",
                           self.broker.getcash(), "ref:", o.ref)
