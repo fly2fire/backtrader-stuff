@@ -37,9 +37,9 @@ class CarverEWMAC(strategies.BaseStrategy.BaseStrategy):
             comminfo = self.broker.comminfo[security_name]
             mult = comminfo.params.mult
             contract_val = mult * d.close[0]
-            max_contracts = self.broker.getvalue() / self.get_total_possible_positions() / contract_val
-            print("max",security_name,"contracts",max_contracts)
-            contracts = (12.5/ewmac.yearly_returns[0]) * ewmac[0] * max_contracts
+            max_contracts = self.broker.getvalue() / self.get_total_possible_positions() / contract_val * 4
+            #print("max",security_name,"contracts",max_contracts)
+            contracts = (50/ewmac.yearly_returns[0]) * ewmac[0]
             if math.isnan(contracts):
                 contracts = pos
             else:

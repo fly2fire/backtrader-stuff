@@ -72,6 +72,8 @@ BASE_PATH + 'stevens_futures2/CME_CL1_FW.csv'
 ]
 
 STEVENS_FUTURES = [x for x in os.listdir(BASE_PATH + 'stevens_futures2/') if '1_FW' in x and not x.startswith('.')]
+STEVENS_CHAIN_TYPE = 'FW'
+STEVENS_MONTH_NUM  = '1'
 
 DAILIES_FUTURES = [
     BASE_PATH + 'kibot_data/cont_futures/daily/GC.txt',
@@ -242,7 +244,7 @@ class MyPandasData(bt.feeds.PandasData):
 def add_data(cerebro):
     stevens_added_commissions = [x['name'] for x in commissions.STEVENS_COMMISSIONS ]
     print(stevens_added_commissions)
-    #stevens_added_commissions = list(set(stevens_added_commissions) - set(commissions.INDICIES))
+    #stevens_added_commissions = list(set(stevens_added_commissions) - set(commissions.INDICIES) - set(commissions.VOLATILITY))
     #stevens_added_commissions = ['ES']
     print(STEVENS_FUTURES)
     for txt in STEVENS_FUTURES:
@@ -252,8 +254,8 @@ def add_data(cerebro):
         print("adding",txt)
         if 'steven' in txt:
             name = os.path.splitext(os.path.basename(txt))[0]
-            name = name.split('_')[1]
-            name = name.replace('1','')
+            name = name.replace(STEVENS_MONTH_NUM + '_' + STEVENS_CHAIN_TYPE,'')
+            print(name)
             if name not in stevens_added_commissions:
                 continue
             print(name)

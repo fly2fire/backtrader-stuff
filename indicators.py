@@ -106,7 +106,7 @@ class EWMACfull(bt.Indicator):
             (self.emas[4],self.emas[6]),
             (self.emas[5],self.emas[7]),
         ]
-        self.percent_returns = PercentReturns()
+        self.percent_returns = bt.ind.EMA(PercentReturns(),period=2)
         self.stddev_percent_returns = bt.ind.StdDev(self.percent_returns,period=256)
 
 

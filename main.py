@@ -35,7 +35,7 @@ def main():
         pass
     elif global_config.GLOBAL_CONFIG == 'FUTURES':
         for com in STEVENS_COMMISSIONS:
-            cerebro.broker.setcommission(mult=com['mult'],name=com['name'],margin=com['margin'])
+            cerebro.broker.setcommission(mult=com['mult'],name=com['name'],margin=com['margin'],commission=2.1)
     elif global_config.GLOBAL_CONFIG == 'STOCK':
         cerebro.broker.setcommission(leverage=3,stocklike=True,commission=.0001,mult=1,margin=None,interest=.01,interest_long=True)
 
