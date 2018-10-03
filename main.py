@@ -17,8 +17,9 @@ import strategies.UpDownCandles
 import strategies.MACross
 import strategies.RSI
 import strategies.CarverEWMAC
+import strategies.FaberTrend
 
-from commissions import ALL_COMMISSIONS, PINNACLE_COMMISSIONS, STEVENS_COMMISSIONS
+from commissions import STEVENS_COMMISSIONS
 import commissions
 import global_config
 
@@ -35,14 +36,15 @@ def main():
         pass
     elif global_config.GLOBAL_CONFIG == 'FUTURES':
         for com in STEVENS_COMMISSIONS:
-            cerebro.broker.setcommission(mult=com['mult'],name=com['name'],margin=com['margin'],commission=2.1)
+            cerebro.broker.setcommission(mult=com['mult'],name=com['name'],margin=com['margin'],commission=0)
     elif global_config.GLOBAL_CONFIG == 'STOCK':
-        cerebro.broker.setcommission(leverage=3,stocklike=True,commission=.0001,mult=1,margin=None,interest=.01,interest_long=True)
+        cerebro.broker.setcommission(leverage=2,stocklike=True,commission=.0001,mult=1,margin=None,interest=.00,interest_long=True)
 
-    cerebro.broker.set_cash(250000)
+    cerebro.broker.set_cash(2500000)
     cerebro.broker.set_shortcash(False)
     cerebro.addobserver(observers.AcctValue)
     cerebro.addobserver(observers.AcctCash)
+    #cerebro.addobserver(observers.AggregateAssets)
     utils.add_data(cerebro)
     for x in range(0,1):
         fast = random.randint(20,60)

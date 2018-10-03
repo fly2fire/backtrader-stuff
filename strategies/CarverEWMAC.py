@@ -19,13 +19,13 @@ class CarverEWMAC(strategies.BaseStrategy.BaseStrategy):
             self.add_indicator(d,'ewmac',indicators.EWMACfull)
 
     def next(self):
-        if global_config.GLOBAL_CONFIG == 'FUTURES':
-            self.update_margins()
+        #if global_config.GLOBAL_CONFIG == 'FUTURES':
+        #    self.update_margins()
         #if not (datetime.time(10,00) <= self.data.datetime.time() <= datetime.time(16, 00)):
         #    return
         weekday = self.datetime.date().weekday()
-        if weekday != 0:
-            return
+        #if weekday != 0:
+        #    return
         for i,d in enumerate(self.get_trading_securities()):
 
             security_name = d.params.name
@@ -37,9 +37,14 @@ class CarverEWMAC(strategies.BaseStrategy.BaseStrategy):
             comminfo = self.broker.comminfo[security_name]
             mult = comminfo.params.mult
             contract_val = mult * d.close[0]
-            max_contracts = self.broker.getvalue() / self.get_total_possible_positions() / contract_val * 4
-            #print("max",security_name,"contracts",max_contracts)
-            contracts = (50/ewmac.yearly_returns[0]) * ewmac[0]
+            max_contracts = self.broker.getvalue() / self.get_total_possible_positions() / contract_val * 3
+
+
+            if contracts < 0:
+                contracts = max((25 / ewmac.yearly_returns[0]) * ewmac[0], -max_contracts)
+            else:
+                contracts = min((25 / ewmac.yearly_returns[0]) * ewmac[0], max_contracts)
+
             if math.isnan(contracts):
                 contracts = pos
             else:

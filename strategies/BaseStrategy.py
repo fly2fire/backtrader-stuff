@@ -20,9 +20,11 @@ class BaseStrategy(bt.Strategy):
 
 
     def get_trading_securities(self):
-        ret = []
+        today = self.datetime.date()
         for d in self.datas:
-            if d.datetime.date() == self.datetime.date():
+            security_name = d.params.name
+            start_dt,end_dt = global_config.GLOBAL_DATAFRAMES_START_END[security_name]
+            if start_dt < today < end_dt:
                 yield d
 
     def get_per_strategy_num_positions(self):

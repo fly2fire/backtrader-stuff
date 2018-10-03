@@ -6,6 +6,7 @@ import tarfile
 import io
 import sys
 import random
+import pandas as pd
 
 import commissions
 import global_config
@@ -245,80 +246,80 @@ def add_data(cerebro):
     stevens_added_commissions = [x['name'] for x in commissions.STEVENS_COMMISSIONS ]
     print(stevens_added_commissions)
     #stevens_added_commissions = list(set(stevens_added_commissions) - set(commissions.INDICIES) - set(commissions.VOLATILITY))
-    #stevens_added_commissions = ['ES']
+    #stevens_added_commissions = ['CME_ES']
     print(STEVENS_FUTURES)
-    for txt in STEVENS_FUTURES:
+
+    files = get_files_by_file_size(STOCKS_BASE_PATH, reverse=True)
+    files = files[:int(len(files)/2)]
+    random.shuffle(files)
+
+    for txt in sorted(STEVENS_FUTURES):
 
         txt = os.path.join(BASE_PATH,'stevens_futures2',txt)
-
-        print("adding",txt)
+        df = pd.read_csv(txt)
         if 'steven' in txt:
             name = os.path.splitext(os.path.basename(txt))[0]
             name = name.replace(STEVENS_MONTH_NUM + '_' + STEVENS_CHAIN_TYPE,'')
-            print(name)
             if name not in stevens_added_commissions:
                 continue
-            print(name)
-            data = btfeed.GenericCSVData(
-                                    dataname=txt,
-                                    dtformat='%Y-%m-%d',
-                                    name = name,
-                                    timeframe=bt.TimeFrame.Days,
-                                    fromdate=datetime.datetime(1900, 1, 1),
-                                    todate=datetime.datetime(2018, 12, 1),
-                                    datetime=5,
-                                    #time=-1,
-                                    open=6,
-                                    high=7,
-                                    low=8,
-                                    close=9,
-                                    volume=10,
-                                    openinterest=11,
-                                    plot=len(stevens_added_commissions) == 1,
-                                    preload=True,
-                                    runonce=True,
-                                    separator=',',
-                                    )
-        elif  True:#'daily' in txt or 'dailies' in txt:
-            data = btfeed.GenericCSVData(dataname=txt,
-                                     dtformat='%m/%d/%Y',
-                                     #tmformat='%H:%M',
-                                     name = os.path.splitext(os.path.basename(txt))[0],
-                                     timeframe=bt.TimeFrame.Days,
-                                     fromdate=datetime.datetime(1900, 1, 1),
-                                     todate=datetime.datetime(2018, 12, 1),
-                                     datetime=0,
-                                     time=-1,
-                                     open=1,
-                                     high=2,
-                                     low=3,
-                                     close=4,
-                                     volume=5,
-                                     openinterest=-6,
-                                     #plot=False,
-                                     preload=True,
-                                     runonce=True
-                                     )
+            kwargs = {
+                'name': name,
+                'dtformat' : '%Y-%m-%d',
+                'datetime':5,
+                'open':6,
+                'high':7,
+                'low':8,
+                'close':9,
+                'volume':10,
+                'openinterest':11,
+            }
+
+        elif 'daily' in txt and 'kibot' in txt:
+            kwargs = {
+                'dtformat' : '%m/%d/%Y',
+                'name' : os.path.splitext(os.path.basename(txt))[0],
+                'datetime' : 0,
+                'time' : -1,
+                'open' : 1,
+                'high' : 2,
+                'low' : 3,
+                'close' : 4,
+                'volume' : 5,
+                'openinterest' : -6,
+            }
         else:
+            kwargs = {
+                'dtformat' : '%m/%d/%Y',
+                'tmformat' : '%H:%M',
+                'name' : os.path.splitext(os.path.basename(txt))[0],
+                'datetime' : 0,
+                'time' : -1,
+                'open' : 1,
+                'high' : 2,
+                'low' : 3,
+                'close' : 4,
+                'volume' : 5,
+                'openinterest' : -6,
+            }
+        data = btfeed.GenericCSVData(
+            dataname=txt,
+            **kwargs,
+            timeframe=bt.TimeFrame.Days,
+            fromdate=datetime.datetime(1990, 1, 1),
+            todate=datetime.datetime(2018, 12, 1),
+            plot=False,
+            preload=True,
+            runonce=True,
+            separator=',',
+        )
 
-            data = btfeed.GenericCSVData(dataname=txt,
-                                     dtformat='%m/%d/%Y',
-                                     tmformat='%H:%M',
-                                     name = os.path.splitext(os.path.basename(txt))[0],
-                                     timeframe=bt.TimeFrame.Minutes,
-                                     fromdate=datetime.datetime(2000, 1, 1),
-                                     todate=datetime.datetime(2018, 12, 1),
-                                     datetime=0,
-                                     time=1,
-                                     open=2,
-                                     high=3,
-                                     low=4,
-                                     close=5,
-                                     volume=6,
-                                     openinterest=-6,
-                                    # plot=False,
-                                     preload=True,
-                                     runonce=True
-                                     )
+        begin = df[df.columns[kwargs['datetime']]].iloc[0]
+        end = df[df.columns[kwargs['datetime']]].iloc[-1]
+        print("adding", txt)
+        print(begin)
+        print(end)
 
+        start_dt = datetime.datetime.strptime(begin,kwargs['dtformat'])
+        end_dt = datetime.datetime.strptime(end,kwargs['dtformat'])
+        global_config.GLOBAL_DATAFRAMES_START_END[kwargs['name']] = (start_dt.date(), end_dt.date())
         cerebro.adddata(data)

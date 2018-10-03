@@ -99,15 +99,15 @@ class EWMACfull(bt.Indicator):
             self.emas.append(bt.ind.EMA(period=p))
 
         self.pairs = [
-            (self.emas[0],self.emas[2]),
-            (self.emas[1],self.emas[3]),
+            #(self.emas[0],self.emas[2]),
+            #(self.emas[1],self.emas[3]),
             (self.emas[2],self.emas[4]),
             (self.emas[3],self.emas[5]),
             (self.emas[4],self.emas[6]),
             (self.emas[5],self.emas[7]),
         ]
-        self.percent_returns = bt.ind.EMA(PercentReturns(),period=2)
-        self.stddev_percent_returns = bt.ind.StdDev(self.percent_returns,period=256)
+        self.percent_returns = PercentReturns()
+        self.stddev_percent_returns = bt.ind.StdDev(self.percent_returns,period=1000)
 
 
     def next(self):
