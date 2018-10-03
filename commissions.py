@@ -32,7 +32,7 @@ STEVENS_COMMISSIONS = [
 # "HO","HO","NYMEX Heating Oil","CME","1979-12-28","F1980","FGHJKMNQUVXZ","2","42,000 gallons","$0.0001 per gallon","U.S. dollars and cents per gallon","The oil delivered shall be a pure hydrocarbon oil free from renewable fuel, biodiesel, alkali, mineral acid, grit, fibrous or other foreign matter, meeting the Delivery specifications of the Colonial Pipeline's Fungible Grade 62 for Ultra Low Sulfur Diesel","42000"
 {'margin': 3800.0, 'mult': 42000.0, 'name': 'HO'},
 # "SF","6S","CME Swiss Franc CHF","CME","1975-09-15","U1975","HMUZ","1","125,000 Swiss francs","$.0001 per Swiss Franc increments ($12.50/contract). $.00005 per Swiss Franc increments ($6.25/contract) for CHF/USD futures intra-currency spreads executed on the trading floor and electronically, and for AON transactions.","US dollars and cents per Swiss Franc","125,000 Swiss Francs","125000"
-{'margin': 2600.0, 'mult': 125000.0, 'name': 'SF'},
+#{'margin': 2600.0, 'mult': 125000.0, 'name': 'SF'},
 # "PL","PL","NYMEX Platinum","CME","1970-01-14","F1970","FJNV","1","50 troy ounces","$0.10 per troy ounce","dollars and Cents per troy ounce","Platinum that is a minimum of 99.95% pure","50"
 {'margin': 1900.0, 'mult': 50.0, 'name': 'PL'},
 # "C","ZC","CBOT Corn","CME","1960-03-22","H1960","HKNUZ","4","5,000 bushels (~ 127 Metric Tons)","1/4 of one cent per bushel ($12.50 per contract)","Cents per bushel","#2 Yellow at contract Price, #1 Yellow at a 1.5 cent/bushel premium #3 Yellow at a 1.5 cent/bushel discount","50"
@@ -211,6 +211,17 @@ STEVENS_MARGIN_RATIOS = {
 'SB': 0.09531665927240461,
 
 }
+
+
+CURRENCIES = ['AD','BP','CD','DX','JY','MP','NE','SF','EC']
+INDICIES = ['DJ','YM','NQ','NK','MD','SP','ES','RS1','RTY','FDAX','FESX',]
+ENERGIES = ['RB','HO','NG','CL','B']
+METALS = ['GC','SI','HG','PA','PL']
+INTEREST_RATES = ['TY','TU','FF','US','FV',]
+SOFTS = ['CC','KC','CY','SB','OJ','LB','DA']
+LIVESTOCK = ['LN','LC',]
+GRAINS = ['C','O','RR','SM','BO','S','KW',]
+VOLATILITY = ['VX']
 
 PINNACLE_COMMISSIONS = [
 # AP-AUS. INDEX

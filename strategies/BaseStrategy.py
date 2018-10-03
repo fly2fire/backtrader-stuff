@@ -1,3 +1,5 @@
+import math
+
 import backtrader as bt
 
 import global_config
@@ -30,7 +32,8 @@ class BaseStrategy(bt.Strategy):
         return sum([s.get_per_strategy_num_positions() for s in self.cerebro.runningstrats])
 
     def get_total_possible_positions(self):
-        return len(list(self.get_trading_securities())) * len(self.cerebro.runningstrats)
+        positions = len(list(self.get_trading_securities())) * len(self.cerebro.runningstrats)
+        return max(positions,1)
 
     def get_per_strategy_position(self,security_name):
         return self.per_strategy_positions.get(security_name,0)
@@ -80,9 +83,11 @@ class BaseStrategy(bt.Strategy):
             #return 100
             try:
                 #print("per strategy value",self.get_per_strategy_value(security_name))
-                free_positions = (self.get_total_possible_positions() - self.get_total_num_positions()) + 1
+                free_positions = (self.get_total_possible_positions() - self.get_total_num_positions())
+                if free_positions == 0:
+                    free_positions = 1
                 #print("free positions",free_positions)
-                stocks = self.broker.getvalue() / (self.get_total_possible_positions() + 1)
+                stocks = self.broker.getcash() / free_positions
                 stocks /= data.close[0]
                 stocks *= .99
                 stocks *= leverage
@@ -114,12 +119,10 @@ class BaseStrategy(bt.Strategy):
             mult = comminfo.params.mult
             margin = comminfo.params.margin
             try:
-                max_contracts = int((self.broker.getvalue() / margin / (self.get_total_possible_positions()+1))**(1.0/1.9))
+                max_contracts = int((self.broker.getvalue() / margin / (self.get_total_possible_positions()))**(1.0/2.0))
             except:
-                max_contracts = 1
-            if max_contracts == 0:
-                max_contracts = 1
-            return max_contracts
+                max_contracts = 0
+            return int(math.fabs(max_contracts))
 
     def close_open_orders(self, data):
         orders = self.orders[data.params.name]

@@ -16,6 +16,7 @@ import strategies.SimpleMA
 import strategies.UpDownCandles
 import strategies.MACross
 import strategies.RSI
+import strategies.CarverEWMAC
 
 from commissions import ALL_COMMISSIONS, PINNACLE_COMMISSIONS, STEVENS_COMMISSIONS
 import commissions
@@ -36,23 +37,22 @@ def main():
         for com in STEVENS_COMMISSIONS:
             cerebro.broker.setcommission(mult=com['mult'],name=com['name'],margin=com['margin'])
     elif global_config.GLOBAL_CONFIG == 'STOCK':
-        cerebro.broker.setcommission(leverage=2,stocklike=True,commission=.0005,mult=1,margin=None,interest=.00,interest_long=True)
+        cerebro.broker.setcommission(leverage=3,stocklike=True,commission=.0001,mult=1,margin=None,interest=.01,interest_long=True)
 
-    cerebro.broker.set_cash(2500000)
+    cerebro.broker.set_cash(250000)
     cerebro.broker.set_shortcash(False)
     cerebro.addobserver(observers.AcctValue)
     cerebro.addobserver(observers.AcctCash)
     utils.add_data(cerebro)
     for x in range(0,1):
-        fast = random.randint(10,80)
-        slow = fast * random.randint(3,4)
+        fast = random.randint(20,60)
+        slow = fast * random.randint(3,5)
         #fast = 20
         #slow = 100
         name = str(x)
         print("adding strat with fast {} slow {}".format(fast,slow))
-        cerebro.addstrategy(strategies.SimpleMA.SimpleMA,fast=fast,slow=slow,name=name,plot=False)
-
-    #cerebro.addstrategy(strategies.Donchian.Donchian,entry=40,exit=20,name='donchian',plot=False)
+        #cerebro.addstrategy(strategies.SimpleMA.SimpleMA,fast=fast,slow=slow,name=name,plot=False)
+    cerebro.addstrategy(strategies.CarverEWMAC.CarverEWMAC, fast=64, slow=256, name="5", plot=False)
     cerebro.addobserver(bt.observers.DrawDown)
     cerebro.addanalyzer(bt.analyzers.SharpeRatio)
     cerebro.addanalyzer(bt.analyzers.SQN)

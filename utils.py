@@ -71,7 +71,7 @@ BASE_PATH + 'stevens_futures2/CME_CL1_FW.csv'
 
 ]
 
-STEVENS_FUTURES = [x for x in os.listdir(BASE_PATH + 'stevens_futures2/') if '1_FW' in x]
+STEVENS_FUTURES = [x for x in os.listdir(BASE_PATH + 'stevens_futures2/') if '1_FW' in x and not x.startswith('.')]
 
 DAILIES_FUTURES = [
     BASE_PATH + 'kibot_data/cont_futures/daily/GC.txt',
@@ -240,22 +240,13 @@ class MyPandasData(bt.feeds.PandasData):
     params=(('time',1),)
 
 def add_data(cerebro):
-    files = get_files_by_file_size(CLC_FUTURES_PATH,reverse=True)
-    #files = files[:int(len(files)/8)]
-    #print(files[0])
-    #random.shuffle(files)
     stevens_added_commissions = [x['name'] for x in commissions.STEVENS_COMMISSIONS ]
     print(stevens_added_commissions)
-    #stevens_added_commissions = ['CL', 'LN', 'W', 'NK', 'S', 'ES', 'MD', 'AD', 'BO', 'B', 'SI', 'GC', 'PA', 'HO',
-    #                             'SF', 'PL', 'C', 'SM', 'FV', 'NG', 'ATW', 'TY', 'KC', 'BP', 'JY', 'CD', 'DX', 'ED',
-    #                             'EC', 'CT', 'G', 'CC', 'OJ', 'LC', 'RB', 'KW', 'NE', 'NQ', 'VX', 'US', 'FF', 'HG', 'SB', 'TU', 'MP', 'DA', 'YM']
-
-    #stevens_added_commissions = ['CL', 'LN', 'W', 'NK', 'S', 'ES', 'MD', 'AD', 'BO', 'B', 'SI', 'GC', 'PA', 'HO',
-    #                             'SF', 'PL', 'C', 'SM', 'FV', 'NG', 'ATW','TY', 'KC', 'BP', 'JY', 'CD', 'DX', 'ED',
-    #                             'EC', 'CT', 'G', 'CC', 'OJ','LC','KW', 'NE', 'NQ', 'VX', 'US','FF', 'HG', 'SB','TU', 'DA', 'YM']
-    #stevens_added_commissions = ['CL']
-
+    #stevens_added_commissions = list(set(stevens_added_commissions) - set(commissions.INDICIES))
+    #stevens_added_commissions = ['ES']
+    print(STEVENS_FUTURES)
     for txt in STEVENS_FUTURES:
+
         txt = os.path.join(BASE_PATH,'stevens_futures2',txt)
 
         print("adding",txt)
@@ -281,13 +272,12 @@ def add_data(cerebro):
                                     close=9,
                                     volume=10,
                                     openinterest=11,
-                                    plot=False,
+                                    plot=len(stevens_added_commissions) == 1,
                                     preload=True,
                                     runonce=True,
-                                    reverse=True,
                                     separator=',',
                                     )
-        elif  'daily' in txt or 'dailies' in txt:
+        elif  True:#'daily' in txt or 'dailies' in txt:
             data = btfeed.GenericCSVData(dataname=txt,
                                      dtformat='%m/%d/%Y',
                                      #tmformat='%H:%M',
@@ -303,7 +293,7 @@ def add_data(cerebro):
                                      close=4,
                                      volume=5,
                                      openinterest=-6,
-                                     plot=False,
+                                     #plot=False,
                                      preload=True,
                                      runonce=True
                                      )
@@ -329,10 +319,4 @@ def add_data(cerebro):
                                      runonce=True
                                      )
 
-
-        #data = MyChartData(dataname=txt,name=os.path.splitext(os.path.basename(txt))[0])
         cerebro.adddata(data)
-        #if global_config.GLOBAL_CONFIG == 'FOREX':
-
-            #comminfo = commissions.forexSpreadCommisionScheme(spread=0.0,JPY_pair='JPY' in txt)
-            #cerebro.broker.addcommissioninfo(comminfo,name=os.path.basename(txt).split('.')[0])

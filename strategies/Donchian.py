@@ -35,24 +35,12 @@ class Donchian(strategies.BaseStrategy.BaseStrategy):
             contracts = self.do_sizing_simple(security_name, d)
             entry = self.get_indicator(d,'entry')
             exit = self.get_indicator(d,'exit')
-            if self.getposition(d).size > 0 and entry.exitshort[0]:
-                    self.close(data=d)
-            elif self.getposition(d).size > 0 and entry.exitlong[0]:
+            pos = self.getposition(d).size
+            if pos > 0 and exit.sellsig[0]:
                 self.close(data=d)
             if entry.buysig[0]:
-                if self.getposition(d).size > 0:
+                if pos > 0:
                     continue
-                elif self.getposition(d).size < 0:
+                elif pos < 0:
                     self.close(data=d)
-
-                #self.orders[security_name] = self.sell(data=d,size=contracts)
-                o = self.orders[security_name] = self.sell_bracket(data=d, size=contracts,exectype=bt.Order.Market,stopprice=d.close[0]*.99, limitprice=d.close[0]*1.01)
-                self.record_bracket(o)
-            elif entry.sellsig[0]:#  and ma[0] < ma[-1]:
-                if self.getposition(d).size < 0:
-                    continue
-                elif self.getposition(d).size > 0:
-                    self.close(data=d)
-                #self.orders[security_name] = self.buy(data=d,size=contracts)
-                o = self.orders[security_name] = self.buy_bracket(data=d,size=contracts, exectype=bt.Order.Market,stopprice=d.close[0]*1.01,limitprice=d.close[0]*.99)
-                self.record_bracket(o)
+                self.buy(data=d,size=contracts)

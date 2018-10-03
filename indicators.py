@@ -74,32 +74,61 @@ class DonchianChannel(bt.Indicator):
         self.lines.exitlong[0] = self.data.close[0] < average
         self.lines.exitshort[0] = self.data.close[0] > average
 
-class EWMAC(bt.Indicator):
-    lines = ('ewmac',)
-    params = (('fast_ma',4),('slow_ma',16))
+class EWMACfull(bt.Indicator):
+    lines = ('ewmac', 'yearly_returns')
+    params = (('fast_ma', 4), ('slow_ma', 16))
 
-    plotinfo = dict(plot=True,subplot=True)
+    plotinfo = dict(plot=True, subplot=True)
     plotlines = dict(
         ewmac=dict(ls='--'),
     )
+    scalars = {
+        (2, 8): 10.6,
+        (4, 16): 7.5,
+        (8, 32): 5.3,
+        (16, 64): 3.75,
+        (32, 128): 2.65,
+        (64, 256): 1.87,
+    }
 
     def __init__(self):
-        self.addminperiod(self.params.slow_ma)
-        self.ema_fast = bt.ind.EMA(period=self.params.fast_ma)
-        self.ema_slow = bt.ind.EMA(period=self.params.slow_ma)
+        print("calculating carver EWMAC for",self.data.params.name)
+        periods = [2,4,8,16,32,64,128,256]
+        self.emas = []
+        for p in periods:
+            self.emas.append(bt.ind.EMA(period=p))
+
+        self.pairs = [
+            (self.emas[0],self.emas[2]),
+            (self.emas[1],self.emas[3]),
+            (self.emas[2],self.emas[4]),
+            (self.emas[3],self.emas[5]),
+            (self.emas[4],self.emas[6]),
+            (self.emas[5],self.emas[7]),
+        ]
         self.percent_returns = PercentReturns()
-        self.stddev_percent_returns = bt.ind.StdDev(self.percent_returns,period=25)
+        self.stddev_percent_returns = bt.ind.StdDev(self.percent_returns,period=256)
+
 
     def next(self):
-        print('fast',self.ema_fast[0])
-        print('slow',self.ema_slow[0])
-        print(' returns',self.percent_returns[0])
-        print('stddev returns',self.stddev_percent_returns[0])
-        if self.percent_returns[0] == 0.0:
-            self.lines.ewmac[0] = 0
-        elif self.stddev_percent_returns[0] == 0.0:
-            self.lines.ewmac[0] = 0.0
-        self.lines.ewmac[0] = (self.ema_fast[0] - self.ema_slow[0]) / (self.stddev_percent_returns[0] * self.datas[0])
+        ewmacs = []
+        for fast_ma,slow_ma in self.pairs:
+            if self.percent_returns[0] == 0.0:
+                self.lines.ewmac[0] = 0
+            elif self.stddev_percent_returns[0] == 0.0:
+                self.lines.ewmac[0] = 0.0
+            vol_adj_ewma_cross = (fast_ma[0] - slow_ma[0]) / (self.stddev_percent_returns[0] * self.datas[0])
+            ewmacs.append(vol_adj_ewma_cross * EWMACfull.scalars[(fast_ma.params.period, slow_ma.params.period)])
+
+
+        t = sum(ewmacs) / len(ewmacs)
+        if t > 20:
+            t = 20
+        elif t < -20:
+            t = -20
+        self.lines.ewmac[0] = t / 20
+        self.lines.yearly_returns[0] = self.stddev_percent_returns[0] *256
+
 
 class RawReturns(bt.Indicator):
     lines = ('returns',)
@@ -118,7 +147,7 @@ class PercentReturns(bt.Indicator):
         self.addminperiod(2)
 
     def next(self):
-        self.lines.returns[0] = self.data[0] / self.data[-1] #- 1.0
+        self.lines.returns[0] = (self.data[0] - self.data[-1]) / self.data[-1]
 
 class AnnualReturns(bt.Indicator):
     lines = ('annualreturn',)
