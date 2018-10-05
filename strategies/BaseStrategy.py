@@ -34,7 +34,7 @@ class BaseStrategy(bt.Strategy):
         return sum([s.get_per_strategy_num_positions() for s in self.cerebro.runningstrats])
 
     def get_total_possible_positions(self):
-        positions = len(list(self.get_trading_securities())) * len(self.cerebro.runningstrats)
+        positions = global_config.GLOBAL_TRADING_SECURITIES[self.datetime.date()] * len(self.cerebro.runningstrats)
         return max(positions,1)
 
     def get_per_strategy_position(self,security_name):

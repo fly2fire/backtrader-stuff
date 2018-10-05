@@ -250,7 +250,7 @@ def add_data(cerebro):
     print(STEVENS_FUTURES)
 
     files = get_files_by_file_size(STOCKS_BASE_PATH, reverse=True)
-    files = files[:int(len(files)/2)]
+    #files = files[:int(len(files)/2)]
     random.shuffle(files)
 
     for txt in sorted(STEVENS_FUTURES):
@@ -301,25 +301,45 @@ def add_data(cerebro):
                 'volume' : 5,
                 'openinterest' : -6,
             }
+
+        try:
+            #this throws an error for some securities, so... skip!
+            begin = df[df.columns[kwargs['datetime']]].iloc[0]
+            end = df[df.columns[kwargs['datetime']]].iloc[-1]
+        except:
+            continue
+
+        start_dt = datetime.datetime.strptime(begin,kwargs['dtformat'])
+        end_dt = datetime.datetime.strptime(end,kwargs['dtformat'])
+        delta = end_dt - start_dt
+        #we're only allowing stocks that have been trading for > 2 years, plus a few days for fudge factor
+        if delta.days < 750:
+            print("skipping",kwargs['name'],"due to not enough trading date")
+            continue
+        print("adding", kwargs['name'])
+        start_dt += datetime.timedelta(days=740)
+        global_config.GLOBAL_DATAFRAMES_START_END[kwargs['name']] = (start_dt.date(), end_dt.date())
+
+        #we still load all data since we want correct values say, 200 day MA, rather than only
+        #1 day of it
         data = btfeed.GenericCSVData(
             dataname=txt,
             **kwargs,
             timeframe=bt.TimeFrame.Days,
-            fromdate=datetime.datetime(1990, 1, 1),
+            fromdate=datetime.datetime(1900, 1, 1),
             todate=datetime.datetime(2018, 12, 1),
             plot=False,
             preload=True,
             runonce=True,
             separator=',',
         )
-
-        begin = df[df.columns[kwargs['datetime']]].iloc[0]
-        end = df[df.columns[kwargs['datetime']]].iloc[-1]
-        print("adding", txt)
-        print(begin)
-        print(end)
-
-        start_dt = datetime.datetime.strptime(begin,kwargs['dtformat'])
-        end_dt = datetime.datetime.strptime(end,kwargs['dtformat'])
-        global_config.GLOBAL_DATAFRAMES_START_END[kwargs['name']] = (start_dt.date(), end_dt.date())
         cerebro.adddata(data)
+
+    #data has been loaded. let's precompute the number of trading securities
+    for begin,end in global_config.GLOBAL_DATAFRAMES_START_END.values():
+        delta = end - begin
+        for i in range(delta.days + 1):
+            d = begin + datetime.timedelta(i)
+            global_config.GLOBAL_TRADING_SECURITIES[d] += 1
+    for k,v in sorted(global_config.GLOBAL_TRADING_SECURITIES.items()):
+        print(k,v)

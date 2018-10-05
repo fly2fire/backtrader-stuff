@@ -41,9 +41,9 @@ class CarverEWMAC(strategies.BaseStrategy.BaseStrategy):
 
 
             if contracts < 0:
-                contracts = max((25 / ewmac.yearly_returns[0]) * ewmac[0], -max_contracts)
+                contracts = max((100 / ewmac.yearly_returns[0]) * ewmac[0], -max_contracts)
             else:
-                contracts = min((25 / ewmac.yearly_returns[0]) * ewmac[0], max_contracts)
+                contracts = min((100 / ewmac.yearly_returns[0]) * ewmac[0], max_contracts)
 
             if math.isnan(contracts):
                 contracts = pos

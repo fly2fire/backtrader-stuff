@@ -40,7 +40,7 @@ def main():
     elif global_config.GLOBAL_CONFIG == 'STOCK':
         cerebro.broker.setcommission(leverage=2,stocklike=True,commission=.0001,mult=1,margin=None,interest=.00,interest_long=True)
 
-    cerebro.broker.set_cash(2500000)
+    cerebro.broker.set_cash(25000000)
     cerebro.broker.set_shortcash(False)
     cerebro.addobserver(observers.AcctValue)
     cerebro.addobserver(observers.AcctCash)

@@ -92,6 +92,7 @@ class EWMACfull(bt.Indicator):
     }
 
     def __init__(self):
+        self.addminperiod(256)
         print("calculating carver EWMAC for",self.data.params.name)
         periods = [2,4,8,16,32,64,128,256]
         self.emas = []
@@ -99,15 +100,15 @@ class EWMACfull(bt.Indicator):
             self.emas.append(bt.ind.EMA(period=p))
 
         self.pairs = [
-            #(self.emas[0],self.emas[2]),
-            #(self.emas[1],self.emas[3]),
+            (self.emas[0],self.emas[2]),
+            (self.emas[1],self.emas[3]),
             (self.emas[2],self.emas[4]),
             (self.emas[3],self.emas[5]),
             (self.emas[4],self.emas[6]),
             (self.emas[5],self.emas[7]),
         ]
         self.percent_returns = PercentReturns()
-        self.stddev_percent_returns = bt.ind.StdDev(self.percent_returns,period=1000)
+        self.stddev_percent_returns = bt.ind.StdDev(self.percent_returns,period=256)
 
 
     def next(self):
@@ -117,17 +118,41 @@ class EWMACfull(bt.Indicator):
                 self.lines.ewmac[0] = 0
             elif self.stddev_percent_returns[0] == 0.0:
                 self.lines.ewmac[0] = 0.0
-            vol_adj_ewma_cross = (fast_ma[0] - slow_ma[0]) / (self.stddev_percent_returns[0] * self.datas[0])
+            vol_adj_ewma_cross = (fast_ma[0] - slow_ma[0]) / (self.stddev_percent_returns[0] * self.data[0])
             ewmacs.append(vol_adj_ewma_cross * EWMACfull.scalars[(fast_ma.params.period, slow_ma.params.period)])
 
-
-        t = sum(ewmacs) / len(ewmacs)
-        if t > 20:
-            t = 20
-        elif t < -20:
-            t = -20
-        self.lines.ewmac[0] = t / 20
+        for i,e in enumerate(ewmacs):
+            if e > 20:
+                e = 20
+            elif e < -20:
+                e = -20
+            ewmacs[i] = e
+        t = sum(ewmacs) / len(ewmacs) / 20
+        self.lines.ewmac[0] = t
         self.lines.yearly_returns[0] = self.stddev_percent_returns[0] *256
+
+    def once(self,start,end):
+
+        for i in range(start,end):
+            ewmacs = []
+            for fast_ma, slow_ma in self.pairs:
+                if self.percent_returns[i] == 0.0:
+                    self.lines.ewmac[i] = 0
+                elif self.stddev_percent_returns[i] == 0.0:
+                    self.lines.ewmac[i] = 0.0
+                vol_adj_ewma_cross = fast_ma[i] - slow_ma[i] / (self.stddev_percent_returns[i] * self.data[i])
+                ewmacs.append(vol_adj_ewma_cross * EWMACfull.scalars[(fast_ma.params.period, slow_ma.params.period)])
+
+            for idx, e in enumerate(ewmacs):
+                if e > 20:
+                    e = 20
+                elif e < -20:
+                    e = -20
+                ewmacs[idx] = e
+            t = sum(ewmacs) / len(ewmacs) / 20
+            self.lines.ewmac[i] = t
+            self.lines.yearly_returns[i] = self.stddev_percent_returns[i] * 256
+
 
 
 class RawReturns(bt.Indicator):
@@ -149,6 +174,12 @@ class PercentReturns(bt.Indicator):
     def next(self):
         self.lines.returns[0] = (self.data[0] - self.data[-1]) / self.data[-1]
 
+    def once(self,start,end):
+
+        for i in range(start,end):
+            self.lines.returns[i] = (self.data[i] - self.data[i-1]) / self.data[i-1]
+
+
 class AnnualReturns(bt.Indicator):
     lines = ('annualreturn',)
 
@@ -156,11 +187,11 @@ class AnnualReturns(bt.Indicator):
         pass
 
     def next(self):
-        symbol = self.datas[0].params.name
-        month = self.datas[0].datetime.date().month
+        symbol = self.data[0].params.name
+        month = self.data[0].datetime.date().month
         distance = commissions.get_next_contract_distance(symbol, month)
 
-        self.lines.annualreturn[0] = self.datas[0] / distance
+        self.lines.annualreturn[0] = self.data[0] / distance
         if math.isnan(self.lines.annualreturn[0]):
             pass
 
