@@ -16,179 +16,23 @@ PANDAS_HEADER=['datetime','open','high','low','close','volume']
 if sys.platform.startswith('win'):
     BASE_PATH = 'C:/Users/mcdof/Documents/'
 else:
-    BASE_PATH = '/media/forrest/769A17459A170173/Users/mcdof/Documents/'
+    if os.path.exists('/home/forrest/stock_data_drive'):
+        BASE_PATH = '/home/forrest/stock_data_drive/otherdata/'
+    else:
+        BASE_PATH = '/media/forrest/769A17459A170173/Users/mcdof/Documents/'
 
-FOREX_FUTURES = [
-    BASE_PATH + 'kibot_data/cont_futures/60min/JY.txt',
-    BASE_PATH + 'kibot_data/cont_futures/60min/BP.txt',
-    BASE_PATH + 'kibot_data/cont_futures/60min/CD.txt',
-    BASE_PATH + 'kibot_data/cont_futures/60min/NE.txt',
-    BASE_PATH + 'kibot_data/cont_futures/60min/AD.txt',
-    BASE_PATH + 'kibot_data/cont_futures/60min/SF.txt',
-    BASE_PATH + 'kibot_data/cont_futures/60min/PX.txt',
-]
+if os.path.exists('/mnt/c/Users'):
+    BASE_PATH='/mnt/c/Users/mcdof/Documents/otherdata/'
 
-CLC_FUTURES_DAILIES = [
 
-'/home/forrest/daily_futures/AD_REV.CSV',
-'/home/forrest/daily_futures/AN_REV.CSV',
-'/home/forrest/daily_futures/AP_REV.CSV',
-'/home/forrest/daily_futures/AX_REV.CSV',
 
-'/home/forrest/daily_futures/BC_REV.CSV',
-'/home/forrest/daily_futures/BG_REV.CSV',
-'/home/forrest/daily_futures/BN_REV.CSV',
-'/home/forrest/daily_futures/BO_REV.CSV',
-
-'/home/forrest/daily_futures/C__REV.CSV',
-'/home/forrest/daily_futures/CA_REV.CSV',
-'/home/forrest/daily_futures/CB_REV.CSV',
-'/home/forrest/daily_futures/CC_REV.CSV',
-'/home/forrest/daily_futures/CL_REV.CSV',
-'/home/forrest/daily_futures/CN_REV.CSV',
-'/home/forrest/daily_futures/CR_REV.CSV',
-'/home/forrest/daily_futures/CT_REV.CSV',
-
-#'/home/forrest/daily_futures/DA_REV.CSV',
-'/home/forrest/daily_futures/DJ_REV.CSV',
-'/home/forrest/daily_futures/DT_REV.CSV',
-'/home/forrest/daily_futures/DX_REV.CSV',
-
-'/home/forrest/daily_futures/EC_REV.CSV',
-'/home/forrest/daily_futures/ED_REV.CSV',
-'/home/forrest/daily_futures/EN_REV.CSV',
-'/home/forrest/daily_futures/ER_REV.CSV',
-'/home/forrest/daily_futures/ES_REV.CSV',
-
-'/home/forrest/daily_futures/FA_REV.CSV',
-'/home/forrest/daily_futures/FB_REV.CSV',
-#'/home/forrest/daily_futures/FC_REV.CSV',
-'/home/forrest/daily_futures/FF_REV.CSV',
-
-]
-
-STEVENS_FUTURES = [
-BASE_PATH + 'stevens_futures2/CME_CL1_FW.csv'
-
-]
-
-STEVENS_FUTURES = [x for x in os.listdir(BASE_PATH + 'stevens_futures2/') if '1_FW' in x and not x.startswith('.')]
+#STEVENS_FUTURES = [x for x in os.listdir(BASE_PATH + 'stevens_futures2/') if '1_FW' in x and not x.startswith('.')]
 STEVENS_CHAIN_TYPE = 'FW'
 STEVENS_MONTH_NUM  = '1'
 
-DAILIES_FUTURES = [
-    BASE_PATH + 'kibot_data/cont_futures/daily/GC.txt',
-    # BASE_PATH + 'kibot_data/cont_futures/daily/PA.txt',
-    #  BASE_PATH + 'kibot_data/cont_futures/daily/PL.txt',
-      BASE_PATH + 'kibot_data/cont_futures/daily/SI.txt',
-    #  BASE_PATH + 'kibot_data/cont_futures/daily/HG.txt',
-    # # #BASE_PATH + 'kibot_data/cont_futures/daily/NN.txt',
-    #  BASE_PATH + 'kibot_data/cont_futures/daily/NQ.txt',
-    #  BASE_PATH + 'kibot_data/cont_futures/daily/NG.txt',
-  BASE_PATH + 'kibot_data/cont_futures/daily/CL.txt',
-    #  BASE_PATH + 'kibot_data/cont_futures/daily/HO.txt',
-    #  BASE_PATH + 'kibot_data/cont_futures/daily/RB.txt',
-    #  BASE_PATH + 'kibot_data/cont_futures/daily/TY.txt',
-    #  BASE_PATH + 'kibot_data/cont_futures/daily/JY.txt',
-    #  BASE_PATH + 'kibot_data/cont_futures/daily/BP.txt',
-    #  BASE_PATH + 'kibot_data/cont_futures/daily/CD.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/NE.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/AD.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/SF.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/DX.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/PX.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/GF.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/LE.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/HE.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/S.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/C.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/BO.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/SM.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/W.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/SB.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/KC.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/KW.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/CC.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/OJ.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/RR.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/O.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/daily/LB.txt',
-
-]
-
-FOREX_PAIRS = [
-    BASE_PATH + 'kibot_data/forex/daily/EURUSD.txt',
-    #BASE_PATH + 'kibot_data/forex/daily/EURJPY.txt',
-    #BASE_PATH + 'kibot_data/forex/daily/GBPJPY.txt',
-    #BASE_PATH + 'kibot_data/forex/daily/USDJPY.txt',
-    BASE_PATH + 'kibot_data/forex/daily/EURAUD.txt',
-    BASE_PATH + 'kibot_data/forex/daily/GBPUSD.txt',
-    BASE_PATH + 'kibot_data/forex/daily/EURCAD.txt',
-
-    BASE_PATH + 'kibot_data/forex/daily/AUDUSD.txt',
-    BASE_PATH + 'kibot_data/forex/daily/NZDUSD.txt',
-    BASE_PATH + 'kibot_data/forex/daily/GBPCHF.txt',
-    BASE_PATH + 'kibot_data/forex/daily/EURGBP.txt',
-    BASE_PATH + 'kibot_data/forex/daily/AUDCAD.txt',
-    BASE_PATH + 'kibot_data/forex/daily/AUDCHF.txt',
-    BASE_PATH + 'kibot_data/forex/daily/USDCHF.txt',
-    BASE_PATH + 'kibot_data/forex/daily/AUDNZD.txt',
-    BASE_PATH + 'kibot_data/forex/daily/EURCHF.txt',
-    BASE_PATH + 'kibot_data/forex/daily/EURNZD.txt',
-
-]
-
-ALL_DATAS = [
-    BASE_PATH + 'kibot_data/cont_futures/60min/ES.txt',
-    #BASE_PATH + 'kibot_data/cont_futures/60min/GC.txt',
-
-    #BASE_PATH + 'kibot_data/cont_futures/60min/PA.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/60min/PL.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/60min/SI.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/60min/HG.txt',
-    # #  BASE_PATH + 'kibot_data/cont_futures/60min/NN.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/60min/NQ.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/60min/NG.txt',
-    #   BASE_PATH + 'kibot_data/cont_futures/60min/CL.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/HO.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/RB.txt',
-    #  #  BASE_PATH + 'kibot_data/cont_futures/60min/TY.txt',
-    #  #  BASE_PATH + 'kibot_data/cont_futures/60min/JY.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/JY.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/BP.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/CD.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/NE.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/AD.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/SF.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/DX.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/PX.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/GF.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/LE.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/HE.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/S.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/C.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/BO.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/SM.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/W.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/SB.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/KC.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/KW.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/CC.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/OJ.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/RR.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/O.txt',
-    #    BASE_PATH + 'kibot_data/cont_futures/60min/LB.txt',
-]
-
-STOCKS = [
-
-BASE_PATH + 'kibot_data/stocks/daily/SPY.txt',
-
-]
 
 STOCKS_BASE_PATH = BASE_PATH + 'kibot_data/stocks/daily'
 FOREX_BASE_PATH = BASE_PATH + 'kibot_data/forex/360min'
-CLC_FUTURES_PATH = '/home/forrest/daily_futures/'
 
 def get_files_by_file_size(dirname, reverse=False):
     """ Return list of file paths in directory sorted by file size """
@@ -215,45 +59,21 @@ def get_files_by_file_size(dirname, reverse=False):
 
     return filepaths
 
-def get_quandl_data(symbol,exchange='CME',month='1'):
-    csv_name = exchange + '_' + symbol.upper() + str(month) + '.csv'
-    with tarfile.open('quandl_data.tar.gz','r') as f:
-        member = f.getmember(csv_name)
-        ret = f.extractfile(member)
-        contents = ret.read().decode("utf-8")
 
-        return btfeed.GenericCSVData(dataname=io.StringIO(contents),
-                              dtformat='%Y-%m-%d',
-                              name=symbol,
-                              timeframe=bt.TimeFrame.Ticks,
-                              fromdate=datetime.datetime(2009, 1, 1),
-                              todate=datetime.datetime(2010, 1, 1),
-                              datetime=0,
-                              open=1,
-                              high=2,
-                              low=3,
-                              close=4,
-                              volume=7,
-                              openinterest=8,
-                              plot=False
-                              )
-
-class MyPandasData(bt.feeds.PandasData):
-    lines=('time',)
-    params=(('time',1),)
 
 def add_data(cerebro):
-    stevens_added_commissions = [x['name'] for x in commissions.STEVENS_COMMISSIONS ]
-    print(stevens_added_commissions)
+    #stevens_added_commissions = [x['name'] for x in commissions.STEVENS_COMMISSIONS ]
+    #print(stevens_added_commissions)
     #stevens_added_commissions = list(set(stevens_added_commissions) - set(commissions.INDICIES) - set(commissions.VOLATILITY))
     #stevens_added_commissions = ['CME_ES']
-    print(STEVENS_FUTURES)
+    #print(STEVENS_FUTURES)
 
     files = get_files_by_file_size(STOCKS_BASE_PATH, reverse=True)
-    #files = files[:int(len(files)/2)]
+    files = files[:int(len(files)/2)]
     random.shuffle(files)
+    files = files[:100]
 
-    for txt in sorted(STEVENS_FUTURES):
+    for txt in sorted(files):
 
         txt = os.path.join(BASE_PATH,'stevens_futures2',txt)
         df = pd.read_csv(txt)
@@ -334,7 +154,7 @@ def add_data(cerebro):
             separator=',',
         )
         cerebro.adddata(data)
-
+    print("dont loading data")
     #data has been loaded. let's precompute the number of trading securities
     for begin,end in global_config.GLOBAL_DATAFRAMES_START_END.values():
         delta = end - begin

@@ -1,3 +1,10 @@
+
+import os
+
+#we are running under WSL, so export the xserver
+if os.path.exists('/mnt/c/Users'):
+    os.environ['DISPLAY'] = ':0'
+
 import datetime
 import backtrader as bt
 import backtrader.feeds as btfeed
@@ -9,6 +16,7 @@ import main
 import strategies.BaseStrategy
 
 import global_config
+
 
 class SimpleMA(strategies.BaseStrategy.BaseStrategy):
     params = (('fast', 5),('slow',20),('name','asdf'))
@@ -23,8 +31,6 @@ class SimpleMA(strategies.BaseStrategy.BaseStrategy):
     def next(self):
         if global_config.GLOBAL_CONFIG == 'FUTURES':
             self.update_margins()
-        #if not (datetime.time(10,00) <= self.data.datetime.time() <= datetime.time(16, 00)):
-        #    return
         weekday = self.datetime.date().weekday()
 
         for i,d in enumerate(self.get_trading_securities()):

@@ -16,8 +16,6 @@ class BBands(strategies.BaseStrategy.BaseStrategy):
             self.add_indicator(d,'bb',bt.ind.BollingerBands,period=20)
 
     def next(self):
-        #if not (datetime.time(10,00) <= self.data.datetime.time() <= datetime.time(16, 00)):
-        #    return
         for i,d in enumerate(self.datas):
             security_name = d.params.name
 

@@ -24,7 +24,7 @@ import commissions
 import global_config
 
 
-def main():
+def main(*args, **kwargs):
     start = time.time()
     cerebro = bt.Cerebro(stdstats=False)
 
@@ -38,24 +38,31 @@ def main():
         for com in STEVENS_COMMISSIONS:
             cerebro.broker.setcommission(mult=com['mult'],name=com['name'],margin=com['margin'],commission=0)
     elif global_config.GLOBAL_CONFIG == 'STOCK':
-        cerebro.broker.setcommission(leverage=2,stocklike=True,commission=.0001,mult=1,margin=None,interest=.00,interest_long=True)
+        cerebro.broker.setcommission(leverage=1,stocklike=True,commission=.0001,mult=1,margin=None,interest=.00,interest_long=True)
 
-    cerebro.broker.set_cash(25000000)
+    cerebro.broker.set_cash(100000)
     cerebro.broker.set_shortcash(False)
     cerebro.addobserver(observers.AcctValue)
+    cerebro.addobserver(observers.LogAcctValue)
     cerebro.addobserver(observers.AcctCash)
     #cerebro.addobserver(observers.AggregateAssets)
     utils.add_data(cerebro)
-    for x in range(0,1):
+    for x in range(0,2):
         fast = random.randint(20,60)
         slow = fast * random.randint(3,5)
         #fast = 20
         #slow = 100
         name = str(x)
         print("adding strat with fast {} slow {}".format(fast,slow))
-        #cerebro.addstrategy(strategies.SimpleMA.SimpleMA,fast=fast,slow=slow,name=name,plot=False)
-    cerebro.addstrategy(strategies.CarverEWMAC.CarverEWMAC, fast=64, slow=256, name="5", plot=False)
+    cerebro.addstrategy(strategies.FaberTrend.FaberTrend, fast=64, slow=256, name='trend1', plot=False)
+    #cerebro.addstrategy(strategies.FaberTrend.FaberTrend, fast=32, slow=128, name='trend2', plot=False)
+    #cerebro.addstrategy(strategies.FaberTrend.FaberTrend, fast=16, slow=64, name='trend3', plot=False)
+    #cerebro.addstrategy(strategies.FaberTrend.FaberTrend, fast=8, slow=32, name='trend4', plot=False)
+    #cerebro.addstrategy(strategies.FaberTrend.FaberTrend, fast=4, slow=16, name='trend5', plot=False)
+    #cerebro.addstrategy(strategies.FaberTrend.FaberTrend, fast=2, slow=8, name='trend6', plot=False)
+
     cerebro.addobserver(bt.observers.DrawDown)
+    #cerebro.addobserver(bt.observers.Benchmark)
     cerebro.addanalyzer(bt.analyzers.SharpeRatio)
     cerebro.addanalyzer(bt.analyzers.SQN)
     #cerebro.addanalyzer(bt.analyzers.PyFolio)
@@ -66,6 +73,7 @@ def main():
     #cerebro.addanalyzer(bt.analyzers.Returns)
     cerebro.addanalyzer(bt.analyzers.SharpeRatio_A)
     cerebro.addanalyzer(bt.analyzers.TradeAnalyzer)
+    cerebro.addanalyzer(bt.analyzers.TimeReturn, timeframe=bt.TimeFrame.Years)
 
     ret = cerebro.run()
     for thing in ret[0].analyzers._items:
@@ -93,5 +101,7 @@ def main():
 
 
 if __name__ == '__main__':
-
+    import multiprocessing
+    #with multiprocessing.Pool(2) as p:
+    #    p.map(main,[1,2])
     main()

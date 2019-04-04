@@ -17,7 +17,22 @@ class BaseStrategy(bt.Strategy):
         for d in self.datas:
             self.orders[d.params.name] = None
             self.indicators[d.params.name] = dict()
+        self.num_positions_on = 0
 
+    def close_out(self, *args, **kwargs):
+        self.num_positions_on -= 1
+        return self.close(*args, **kwargs)
+
+    def buy_in(self, *args, **kwargs):
+        self.num_positions_on -= 1
+        return self.buy(*args, **kwargs)
+
+    def short_sell(self, *args, **kwargs):
+        self.num_positions_on += 1
+        return self.sell(*args, **kwargs)
+
+    def positions_available(self):
+        return self.num_positions_on < self.get_total_possible_positions()
 
     def get_trading_securities(self):
         today = self.datetime.date()
@@ -26,6 +41,11 @@ class BaseStrategy(bt.Strategy):
             start_dt,end_dt = global_config.GLOBAL_DATAFRAMES_START_END[security_name]
             if start_dt < today < end_dt:
                 yield d
+
+    def is_last_trading_day(self, security_name):
+        _,end_dt = global_config.GLOBAL_DATAFRAMES_START_END[security_name]
+        today = self.datetime.date()
+        return end_dt == today
 
     def get_per_strategy_num_positions(self):
         return len([x for x in self.per_strategy_positions.values() if x != 0])
@@ -84,14 +104,9 @@ class BaseStrategy(bt.Strategy):
             leverage = self.broker.comminfo[None].params.leverage
             #return 100
             try:
-                #print("per strategy value",self.get_per_strategy_value(security_name))
-                free_positions = (self.get_total_possible_positions() - self.get_total_num_positions())
-                if free_positions == 0:
-                    free_positions = 1
-                #print("free positions",free_positions)
-                stocks = self.broker.getcash() / free_positions
+                stocks = self.broker.getvalue() / self.get_total_possible_positions() + 4
                 stocks /= data.close[0]
-                stocks *= .99
+                stocks *= .9 #leave some cushion for when stock are (de)listed
                 stocks *= leverage
                 stocks *= 1
                 stocks = int(stocks)

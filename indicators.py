@@ -273,3 +273,23 @@ class EVWAP(bt.Indicator):
         #print(average_price)
         self.lines.evwap[0] = average_price
         #print(volume_sum)
+
+class GreenDaysPercent(bt.Indicator):
+
+    lines=('greendayspercent',)
+    params=(('period',252),)
+
+    def __init__(self):
+        self.updaybools = bt.ind.UpDayBool(self.data)
+        self.lines.greendayspercent = bt.ind.Average(self.updaybools, period=self.params.period)
+
+class Momentum(bt.Indicator):
+
+    lines=('momentum',)
+    params=(('period',252),)
+
+    def __init__(self):
+        self.addminperiod(self.params.period)
+        
+    def next(self):
+        self.lines.momentum[0] = (self.data[0] - self.data[-self.params.period]) / self.data[-self.params.period]

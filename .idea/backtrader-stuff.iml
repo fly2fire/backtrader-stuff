@@ -2,7 +2,7 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$" />
-    <orderEntry type="jdk" jdkName="PyPy 2.7" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Remote PyPy 7.1.0-beta0 [Python 3.6.1] (sftp://forrest@127.0.0.1:2200/opt/pypy3/bin/pypy3)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TestRunnerService">
