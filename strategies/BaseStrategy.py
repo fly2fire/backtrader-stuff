@@ -24,7 +24,7 @@ class BaseStrategy(bt.Strategy):
         return self.close(*args, **kwargs)
 
     def buy_in(self, *args, **kwargs):
-        self.num_positions_on -= 1
+        self.num_positions_on += 1
         return self.buy(*args, **kwargs)
 
     def short_sell(self, *args, **kwargs):
@@ -34,17 +34,17 @@ class BaseStrategy(bt.Strategy):
     def positions_available(self):
         return self.num_positions_on < self.get_total_possible_positions()
 
-    def get_trading_securities(self):
-        today = self.datetime.date()
+    def get_trading_securities(self, td=None):
+        today = td if td else self.datetime.date()
         for d in self.datas:
             security_name = d.params.name
             start_dt,end_dt = global_config.GLOBAL_DATAFRAMES_START_END[security_name]
             if start_dt < today < end_dt:
                 yield d
 
-    def is_last_trading_day(self, security_name):
+    def is_last_trading_day(self, security_name, td=None):
         _,end_dt = global_config.GLOBAL_DATAFRAMES_START_END[security_name]
-        today = self.datetime.date()
+        today = td if td else self.datetime.date()
         return end_dt == today
 
     def get_per_strategy_num_positions(self):
@@ -104,11 +104,10 @@ class BaseStrategy(bt.Strategy):
             leverage = self.broker.comminfo[None].params.leverage
             #return 100
             try:
-                stocks = self.broker.getvalue() / self.get_total_possible_positions() + 4
+                stocks = self.broker.getvalue() / self.get_total_possible_positions()
                 stocks /= data.close[0]
                 stocks *= .9 #leave some cushion for when stock are (de)listed
                 stocks *= leverage
-                stocks *= 1
                 stocks = int(stocks)
             except:
                 stocks = 1

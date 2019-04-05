@@ -38,26 +38,10 @@ def get_files_by_file_size(dirname, reverse=False):
     """ Return list of file paths in directory sorted by file size """
 
     # Get list of files
-    filepaths = []
-    for basename in os.listdir(dirname):
-        filename = os.path.join(dirname, basename)
-        if os.path.isfile(filename):
-            filepaths.append(filename)
+    filepaths = [os.path.join(dirname, basename) for basename in os.listdir(dirname)]
 
-    # Re-populate list with filename, size tuples
-    for i in range(len(filepaths)):
-        filepaths[i] = (filepaths[i], os.path.getsize(filepaths[i]))
 
-    # Sort list by file size
-    # If reverse=True sort from largest to smallest
-    # If reverse=False sort from smallest to largest
-    filepaths.sort(key=lambda filename: filename[1], reverse=reverse)
-
-    # Re-populate list with just filenames
-    for i in range(len(filepaths)):
-        filepaths[i] = filepaths[i][0]
-
-    return filepaths
+    return sorted(filepaths,key=os.path.getsize,reverse=True)
 
 
 
@@ -96,7 +80,7 @@ def add_data(cerebro):
 
         elif 'daily' in txt and 'kibot' in txt:
             kwargs = {
-                'dtformat' : '%m/%d/%Y',
+                'dtformat' : '%Y-%m-%d',
                 'name' : os.path.splitext(os.path.basename(txt))[0],
                 'datetime' : 0,
                 'time' : -1,
