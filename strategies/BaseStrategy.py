@@ -32,7 +32,7 @@ class BaseStrategy(bt.Strategy):
         return self.sell(*args, **kwargs)
 
     def positions_available(self):
-        return self.num_positions_on < self.get_total_possible_positions()
+        return self.num_positions_on < self.get_total_possible_positions() / 4
 
     def get_trading_securities(self, td=None):
         today = td if td else self.datetime.date()
@@ -104,7 +104,7 @@ class BaseStrategy(bt.Strategy):
             leverage = self.broker.comminfo[None].params.leverage
             #return 100
             try:
-                stocks = self.broker.getvalue() / self.get_total_possible_positions()
+                stocks = self.broker.getvalue() / self.get_total_possible_positions() * 3
                 stocks /= data.close[0]
                 stocks *= .9 #leave some cushion for when stock are (de)listed
                 stocks *= leverage

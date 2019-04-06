@@ -40,7 +40,7 @@ def main(*args, **kwargs):
     elif global_config.GLOBAL_CONFIG == 'STOCK':
         cerebro.broker.setcommission(leverage=1,stocklike=True,commission=.0001,mult=1,margin=None,interest=.00,interest_long=True)
 
-    cerebro.broker.set_cash(100000)
+    cerebro.broker.set_cash(1000000)
     cerebro.broker.set_shortcash(False)
     cerebro.addobserver(observers.AcctValue)
     cerebro.addobserver(observers.LogAcctValue)
@@ -55,8 +55,8 @@ def main(*args, **kwargs):
         name = str(x)
         print("adding strat with fast {} slow {}".format(fast,slow))
     cerebro.addstrategy(strategies.FaberTrend.FaberTrend, fast=64, slow=256, name='trend1', plot=False)
-    cerebro.addstrategy(strategies.FaberTrend.FaberTrend, fast=32, slow=128, name='trend2', plot=False)
-    cerebro.addstrategy(strategies.FaberTrend.FaberTrend, fast=16, slow=64, name='trend3', plot=False)
+    #cerebro.addstrategy(strategies.FaberTrend.FaberTrend, fast=32, slow=128, name='trend2', plot=False)
+    #cerebro.addstrategy(strategies.FaberTrend.FaberTrend, fast=16, slow=64, name='trend3', plot=False)
     #cerebro.addstrategy(strategies.FaberTrend.FaberTrend, fast=8, slow=32, name='trend4', plot=False)
     #cerebro.addstrategy(strategies.FaberTrend.FaberTrend, fast=4, slow=16, name='trend5', plot=False)
     #cerebro.addstrategy(strategies.FaberTrend.FaberTrend, fast=2, slow=8, name='trend6', plot=False)

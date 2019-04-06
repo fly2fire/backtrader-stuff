@@ -35,12 +35,7 @@ STOCKS_BASE_PATH = BASE_PATH + 'kibot_data/stocks/daily'
 FOREX_BASE_PATH = BASE_PATH + 'kibot_data/forex/360min'
 
 def get_files_by_file_size(dirname, reverse=False):
-    """ Return list of file paths in directory sorted by file size """
-
-    # Get list of files
     filepaths = [os.path.join(dirname, basename) for basename in os.listdir(dirname)]
-
-
     return sorted(filepaths,key=os.path.getsize,reverse=True)
 
 
@@ -53,7 +48,7 @@ def add_data(cerebro):
     #print(STEVENS_FUTURES)
 
     files = get_files_by_file_size(STOCKS_BASE_PATH, reverse=True)
-    files = files[:int(len(files)/2)]
+    files = files[:int(len(files)/2)]#filter out the total loser stocks only or brand new stuff
     random.shuffle(files)
     files = files[:100]
 
@@ -117,11 +112,11 @@ def add_data(cerebro):
         end_dt = datetime.datetime.strptime(end,kwargs['dtformat'])
         delta = end_dt - start_dt
         #we're only allowing stocks that have been trading for > 2 years, plus a few days for fudge factor
-        if delta.days < 750:
+        if delta.days < 0:
             print("skipping",kwargs['name'],"due to not enough trading date")
             continue
         print("adding", kwargs['name'])
-        start_dt += datetime.timedelta(days=740)
+        start_dt += datetime.timedelta(days=0)
         global_config.GLOBAL_DATAFRAMES_START_END[kwargs['name']] = (start_dt.date(), end_dt.date())
 
         #we still load all data since we want correct values say, 200 day MA, rather than only
@@ -138,7 +133,7 @@ def add_data(cerebro):
             separator=',',
         )
         cerebro.adddata(data)
-    print("dont loading data")
+    print("done loading data")
     #data has been loaded. let's precompute the number of trading securities
     for begin,end in global_config.GLOBAL_DATAFRAMES_START_END.values():
         delta = end - begin
