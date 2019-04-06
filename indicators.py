@@ -182,6 +182,7 @@ class PercentReturns(bt.Indicator):
 
 class AnnualReturns(bt.Indicator):
     lines = ('annualreturn',)
+    params = (('period',252),)
 
     def __init__(self):
         pass
@@ -283,6 +284,7 @@ class GreenDaysPercent(bt.Indicator):
         self.updaybools = bt.ind.UpDayBool(self.data)
         self.lines.greendayspercent = bt.ind.Average(self.updaybools, period=self.params.period)
 
+
 class Momentum(bt.Indicator):
 
     lines=('momentum',)
@@ -291,5 +293,16 @@ class Momentum(bt.Indicator):
     def __init__(self):
         self.addminperiod(self.params.period)
         
-    def next(self):
-        self.lines.momentum[0] = (self.data[0] - self.data[-self.params.period]) / self.data[-self.params.period]
+    #def next(self):
+    #    try:
+    #        self.lines.momentum[0] = (self.data[0] - self.data[-self.params.period]) / self.data[-self.params.period]
+    #    except:
+    #        self.lines.momentum[0] = 0
+
+    def once(self, start, end):
+        for i in range(start, end):
+            divisor = self.data[i - self.params.period]
+            if divisor == 0:
+                self.lines.momentum[i] = 0
+            else:
+                self.lines.momentum[i] = (self.data[i] - self.data[i - self.params.period]) /divisor
