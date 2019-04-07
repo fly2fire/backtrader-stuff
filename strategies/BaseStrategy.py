@@ -6,6 +6,8 @@ import global_config
 from collections import defaultdict
 import commissions
 
+NUM_POSITIONS_OFFSET = 2
+
 class BaseStrategy(bt.Strategy):
     params = (('name','asdf'),)
 
@@ -17,22 +19,31 @@ class BaseStrategy(bt.Strategy):
         for d in self.datas:
             self.orders[d.params.name] = None
             self.indicators[d.params.name] = dict()
-        self.num_positions_on = 0
+        self.num_positions_on = 1
 
     def close_out(self, *args, **kwargs):
-        self.num_positions_on -= 1
-        return self.close(*args, **kwargs)
+        order = self.close(*args, **kwargs)
+        if order and order.status not in  [order.Canceled, order.Margin, order.Rejected, order.Expired]:
+            self.num_positions_on -= 1
+        return order
 
     def buy_in(self, *args, **kwargs):
-        self.num_positions_on += 1
-        return self.buy(*args, **kwargs)
+        order = self.buy(*args, **kwargs)
+        if order and order.status not in  [order.Canceled, order.Margin, order.Rejected, order.Expired]:
+            self.num_positions_on += 1
+        return order
 
     def short_sell(self, *args, **kwargs):
-        self.num_positions_on += 1
-        return self.sell(*args, **kwargs)
+        order = self.sell(*args, **kwargs)
+        if order and order.status not in  [order.Canceled, order.Margin, order.Rejected, order.Expired]:
+            self.num_positions_on -= 1
+        return order
 
     def positions_available(self):
-        return self.num_positions_on < self.get_total_possible_positions() / 4
+        return self.num_positions_available() > 0
+
+    def num_positions_available(self):
+        return self.get_total_possible_positions() - self.num_positions_on
 
     def get_trading_securities(self, td=None):
         today = td if td else self.datetime.date()
@@ -53,8 +64,9 @@ class BaseStrategy(bt.Strategy):
     def get_total_num_positions(self):
         return sum([s.get_per_strategy_num_positions() for s in self.cerebro.runningstrats])
 
-    def get_total_possible_positions(self):
-        positions = global_config.GLOBAL_TRADING_SECURITIES[self.datetime.date()] * len(self.cerebro.runningstrats)
+    def get_total_possible_positions(self,td=None):
+        today = td if td is not None else self.datetime.date()
+        positions = global_config.GLOBAL_TRADING_SECURITIES[today] * len(self.cerebro.runningstrats) / NUM_POSITIONS_OFFSET
         return max(positions,1)
 
     def get_per_strategy_position(self,security_name):
@@ -83,8 +95,8 @@ class BaseStrategy(bt.Strategy):
         t  = self.datetime.time()
         print('%s %s %s, %s' % (self.params.name, dt.isoformat(), t, txt))
 
-    def add_indicator(self,data,name,ind,*args,**kwargs):
-        self.indicators[data.params.name][name] = ind(data,*args,**kwargs)
+    def add_indicator(self, data, security_name, ind_name,ind,*args,**kwargs):
+        self.indicators[security_name][ind_name] = ind(data,*args,**kwargs)
 
     def update_margins(self):
         for data in self.get_trading_securities():
@@ -97,23 +109,29 @@ class BaseStrategy(bt.Strategy):
     def get_indicator(self,data,name):
         return self.indicators[data.params.name][name]
 
-    def do_sizing_simple(self,security_name, data):
+    def do_sizing_simple(self,security_name, data, today=None):
         broker = self.broker
         num_strats = len(self.cerebro.runningstrats)
         if global_config.GLOBAL_CONFIG in ['STOCK']:
             leverage = self.broker.comminfo[None].params.leverage
             #return 100
             try:
-                stocks = self.broker.getvalue() / self.get_total_possible_positions() * 3
+                stocks = self.broker.getvalue()  / self.get_total_possible_positions(today) * NUM_POSITIONS_OFFSET
+                total_possible_positions = self.get_total_possible_positions(today)
+                cash = self.broker.getcash()
+                value = self.broker.getvalue()
+                per_stock_price = data.close[0]
                 stocks /= data.close[0]
                 stocks *= .9 #leave some cushion for when stock are (de)listed
                 stocks *= leverage
                 stocks = int(stocks)
             except:
-                stocks = 1
+                stocks = 0
             if stocks == 0:
                 print("num stocks is zero!")
-                stocks = 1
+            if stocks * data.close[0] > self.broker.getcash():
+                print("stock purchase exceeds cash!")
+                stocks = 0
             return stocks
         elif global_config.GLOBAL_CONFIG in ['FOREX']:
             comminfo = self.broker.comminfo
