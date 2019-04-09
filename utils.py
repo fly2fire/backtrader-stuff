@@ -26,7 +26,8 @@ if os.path.exists('/mnt/c/Users'):
     BASE_PATH='/mnt/c/Users/mcdof/Documents/otherdata/'
 if os.path.exists('/media/forrest/AEB6C766B6C72DA1/otherdata/'):
     BASE_PATH = '/media/forrest/AEB6C766B6C72DA1/otherdata/'
-
+if os.path.exists('/mnt/storage2/'):
+    BASE_PATH= '/mnt/storage2/otherdata'
 
 #STEVENS_FUTURES = [x for x in os.listdir(BASE_PATH + 'stevens_futures2/') if '1_FW' in x and not x.startswith('.')]
 STEVENS_CHAIN_TYPE = 'FW'
