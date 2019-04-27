@@ -2,11 +2,10 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$" />
-    <orderEntry type="jdk" jdkName="Remote PyPy 7.0.0 [Python 3.5.3] (sftp://forrest@forrest-server:22/usr/bin/pypy3)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Remote Python 2.7.15rc1 (sftp://forrest@127.0.0.1:2200/usr/bin/python)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TestRunnerService">
-    <option name="projectConfiguration" value="pytest" />
-    <option name="PROJECT_TEST_RUNNER" value="py.test" />
+    <option name="PROJECT_TEST_RUNNER" value="Unittests" />
   </component>
 </module>

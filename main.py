@@ -8,7 +8,7 @@ import utils
 import math
 import random
 
-os.environ['DISPLAY']="localhost:10.0"
+os.environ['DISPLAY']=":0"
 
 import strategies.Donchian
 import strategies.MACross

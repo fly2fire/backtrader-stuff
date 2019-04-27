@@ -27,7 +27,7 @@ if os.path.exists('/mnt/c/Users'):
 if os.path.exists('/media/forrest/AEB6C766B6C72DA1/otherdata/'):
     BASE_PATH = '/media/forrest/AEB6C766B6C72DA1/otherdata/'
 if os.path.exists('/mnt/storage2/'):
-    BASE_PATH= '/mnt/storage2/otherdata'
+    BASE_PATH= '/mnt/storage2/otherdata/'
 
 #STEVENS_FUTURES = [x for x in os.listdir(BASE_PATH + 'stevens_futures2/') if '1_FW' in x and not x.startswith('.')]
 STEVENS_CHAIN_TYPE = 'FW'
@@ -53,7 +53,7 @@ def add_data(cerebro):
     files = get_files_by_file_size(STOCKS_BASE_PATH, reverse=True)
     files = files[:int(len(files)/2)]#filter out the total loser stocks only or brand new stuff
     random.shuffle(files)
-    files = files[:5]
+    files = files[:100]
 
     for txt in sorted(files):
 
@@ -78,7 +78,7 @@ def add_data(cerebro):
 
         elif 'daily' in txt and 'kibot' in txt:
             kwargs = {
-                'dtformat' : '%m/%d/%Y',
+                'dtformat' : '%Y-%m-%d',
                 'name' : os.path.splitext(os.path.basename(txt))[0],
                 'datetime' : 0,
                 'time' : -1,
